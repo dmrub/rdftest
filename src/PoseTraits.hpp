@@ -133,31 +133,102 @@ struct RDFTraits< ::Rotation >
             ctx.model.add_statement(
                 _b2,
                 Curie(ctx.model.world(), "maths:x"),
-                double_node(ctx.model.world(), value.getX())
+                Arvida::RDF::toRDF(ctx, value.getX())
             );
 
             ctx.model.add_statement(
                 _b2,
                 Curie(ctx.model.world(), "maths:y"),
-                double_node(ctx.model.world(), value.getY())
+                Arvida::RDF::toRDF(ctx, value.getY())
             );
 
             ctx.model.add_statement(
                 _b2,
                 Curie(ctx.model.world(), "maths:z"),
-                double_node(ctx.model.world(), value.getZ())
+                Arvida::RDF::toRDF(ctx, value.getZ())
             );
 
             ctx.model.add_statement(
                 _b2,
                 Curie(ctx.model.world(), "maths:w"),
-                double_node(ctx.model.world(), value.getZ())
+                Arvida::RDF::toRDF(ctx, value.getW())
             );
 
         }
     }
 };
 
+template <>
+struct RDFTraits< ::Pose >
+{
+    static void toRDF(const Context &ctx, Sord::Node &_this, const ::Pose &value)
+    {
+        using namespace Sord;
+
+        ctx.model.add_statement(
+            _this,
+            Curie(ctx.model.world(), "rdf:type"),
+            Curie(ctx.model.world(), "spatial:SpatialRelationship"));
+
+        {
+            Node n1 = Node::blank_id(ctx.model.world());
+
+            ctx.model.add_statement(
+                _this,
+                Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"),
+                n1
+            );
+
+            ctx.model.add_statement(
+                n1,
+                Curie(ctx.model.world(), "rdf:type"),
+                Curie(ctx.model.world(), "maths:LeftHandedCartesianCoordinateSystem3D"));
+        }
+
+
+        {
+            Node n1 = Node::blank_id(ctx.model.world());
+
+            ctx.model.add_statement(
+                _this,
+                Curie(ctx.model.world(), "spatial:targetCoordinateSystem"),
+                n1
+            );
+
+            ctx.model.add_statement(
+                n1,
+                Curie(ctx.model.world(), "rdf:type"),
+                Curie(ctx.model.world(), "maths:RightHandedCartesianCoordinateSystem2D")
+            );
+        }
+
+        {
+            // translation
+            Node _translationNode = Node::blank_id(ctx.model.world());
+
+            ctx.model.add_statement(
+                _this,
+                Curie(ctx.model.world(), "spatial:translation"),
+                _translationNode
+            );
+
+            Arvida::RDF::RDFTraits<::Translation>::toRDF(ctx, _translationNode, value.getTranslation());
+        }
+
+        {
+            // rotation
+            Node _rotationNode = Node::blank_id(ctx.model.world());
+
+            ctx.model.add_statement(
+                _this,
+                Curie(ctx.model.world(), "spatial:rotation"),
+                _rotationNode);
+
+            Arvida::RDF::RDFTraits<::Rotation>::toRDF(ctx, _rotationNode, value.getRotation());
+        }
+
+    }
+};
 
 } // namespace Arvida
 } // namespace RDF

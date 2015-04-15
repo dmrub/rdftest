@@ -71,72 +71,13 @@ int main(int argc, char *argv[])
     {
         const std::string uuid_url = "http://test.arvida.de/UUID" + std::to_string(i);
 
-        model.add_statement(
-            URI(world, uuid_url),
-            Curie(world, "rdf:type"),
-            Curie(world, "spatial:SpatialRelationship"));
+        URI pose_node(world, uuid_url);
 
-        {
-            Node n1 = Node::blank_id(world);
+        Pose pose(
+            Translation(1, 2, 3),
+            Rotation(1, 1, 1, 1));
 
-            model.add_statement(
-                URI(world, uuid_url),
-                Curie(world, "spatial:sourceCoordinateSystem"),
-                n1
-            );
-
-            model.add_statement(
-                n1,
-                Curie(world, "rdf:type"),
-                Curie(world, "maths:LeftHandedCartesianCoordinateSystem3D"));
-        }
-
-
-        {
-            Node n1 = Node::blank_id(world);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                Curie(world, "spatial:targetCoordinateSystem"),
-                n1
-            );
-
-            model.add_statement(
-                n1,
-                Curie(world, "rdf:type"),
-                Curie(world, "maths:RightHandedCartesianCoordinateSystem2D")
-            );
-        }
-
-        URI xsd_double(world, XSD("double"));
-
-        {
-            // translation
-            Node _translationNode = Node::blank_id(world);
-            Translation translation(1, 2, 3);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                Curie(world, "spatial:translation"),
-                _translationNode
-            );
-
-            Arvida::RDF::RDFTraits<::Translation>::toRDF(ctx, _translationNode, translation);
-        }
-
-        {
-            // rotation
-            Node _rotationNode = Node::blank_id(world);
-            Rotation rotation(1, 1, 1, 1);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                Curie(world, "spatial:rotation"),
-                _rotationNode);
-
-            Arvida::RDF::RDFTraits<::Rotation>::toRDF(ctx, _rotationNode, rotation);
-        }
-
+        Arvida::RDF::RDFTraits<::Pose>::toRDF(ctx, pose_node, pose);
     }
 
     std::cout << "Writing poses" << std::endl;
