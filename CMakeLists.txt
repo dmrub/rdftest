@@ -81,3 +81,6 @@ include_directories(
 
 add_executable(pose_sordmm src/pose_sordmm.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm seord)
+
+add_executable(pose_sordmm2 src/pose_sordmm2.cpp ${LIBHEADERS})
+target_link_libraries(pose_sordmm2 seord)
