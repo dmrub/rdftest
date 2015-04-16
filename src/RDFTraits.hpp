@@ -30,6 +30,19 @@ NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
     return value.toRDF(ctx, thisNode);
 }
 
+
+template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const double &value)
+{
+    const SerdNode val = serd_node_new_decimal(value, 7);
+    const SerdNode type = serd_node_from_string(SERD_URI, (const uint8_t*) SORD_NS_XSD "double");
+
+    _this = Sord::Node(ctx.model.world(),
+        sord_node_from_serd_node(ctx.model.world().c_obj(), ctx.model.world().prefixes().c_obj(), &val, &type, NULL),
+        false);
+    return _this;
+}
+
 } // namespace Arvida
 } // namespace RDF
 
