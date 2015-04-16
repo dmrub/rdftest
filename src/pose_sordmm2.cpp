@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
             Translation(1, 2, 3),
             Rotation(1, 1, 1, 1));
 
-        Arvida::RDF::RDFTraits<::Pose>::toRDF(ctx, pose_node, pose);
+        Arvida::RDF::toRDF(ctx, pose_node, pose);
     }
 
     std::cout << "Writing poses" << std::endl;

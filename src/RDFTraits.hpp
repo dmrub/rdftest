@@ -7,24 +7,27 @@
 namespace Arvida {
 namespace RDF {
 
+typedef Sord::Node Node;
+typedef Sord::Node * NodePtr;
+typedef Sord::Node & NodeRef;
+
 struct Context
 {
     Sord::Model &model;
     Context(Sord::Model &model) : model(model) { }
 };
 
-template< class T >
-struct RDFTraits
+template < class T >
+Node toRDF(const Context &ctx, const T &value)
 {
-
-};
+    Sord::Node valueNode = Sord::Node::blank_id(ctx.model.world());
+    return toRDF<T>(ctx, valueNode, value);
+}
 
 template < class T >
-Sord::Node toRDF(const Context &ctx, const T &value)
+NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
 {
-    Sord::Node node;
-    RDFTraits<T>::toRDF(ctx, node, value);
-    return node;
+    return value.toRDF(ctx, thisNode);
 }
 
 } // namespace Arvida
