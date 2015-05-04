@@ -21,10 +21,8 @@ struct Context
     Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path) { }
 };
 
-class Triple
+struct Triple
 {
-public:
-
     Sord::Node subject;
     Sord::Node predicate;
     Sord::Node object;
@@ -87,6 +85,21 @@ template < class T >
 bool fromRDF(const Context &ctx, const NodeRef thisNode, T &value)
 {
     return value.fromRDF(ctx, thisNode);
+}
+
+template <>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, double &value)
+{
+    if (_this0.is_literal_type(SORD_NS_XSD "integer") ||
+        _this0.is_literal_type(SORD_NS_XSD "decimal") ||
+        _this0.is_literal_type(SORD_NS_XSD "double"))
+    {
+        char* endptr;
+        value = serd_strtod(_this0.to_c_string(), &endptr);
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace Arvida

@@ -78,91 +78,15 @@ int main(int argc, char *argv[])
 
         URI pose_node(world, uuid_url);
 
-        Arvida::RDF::Triple triple = Arvida::RDF::find_triple(model, pose_node, Curie(model.world(), "rdf:type"), Curie(model.world(), "spatial:SpatialRelationship"));
+        Pose pose(
+            Translation(0, 0, 0),
+            Rotation(0, 0, 0, 0));
 
-        // 1. Check $this
-        if (!triple.is_valid() || !triple.subject.is_uri())
-        {
-            std::cerr<<"Check 1 failed"<<std::endl;
+        if (!Arvida::RDF::fromRDF(ctx, pose_node, pose))
             break;
-        }
-        const Node _this = triple.subject;
 
-        // 2. Check blank _b1
-        triple = Arvida::RDF::find_triple(model, Node(), Curie(model.world(), "rdf:type"), Curie(model.world(), "maths:LeftHandedCartesianCoordinateSystem3D"));
-        if (!triple.is_valid() || !triple.subject.is_blank())
-        {
-            std::cerr<<"Check 2 failed"<<std::endl;
-            break;
-        }
-        const Node _b1 = triple.subject;
+        std::cerr << "Pose: " << pose << std::endl;
 
-        // 3. Check blank _b1
-        if (!Arvida::RDF::check_triple(model, _this, Curie(model.world(), "spatial:sourceCoordinateSystem"), _b1))
-        {
-            std::cerr<<"Check 3 failed"<<std::endl;
-            break;
-        }
-
-        // 4. Check blank _b0
-        triple = Arvida::RDF::find_triple(model, Node(), Curie(model.world(), "rdf:type"), Curie(model.world(), "maths:RightHandedCartesianCoordinateSystem2D"));
-        if (!triple.is_valid() || !triple.subject.is_blank())
-        {
-            std::cerr<<"Check 4 failed"<<std::endl;
-            break;
-        }
-        Node _b0 = triple.subject;
-
-        // 5. Check blank _b0
-        if (!Arvida::RDF::check_triple(model, _this, Curie(model.world(), "spatial:targetCoordinateSystem"), _b0))
-        {
-            std::cerr<<"Check 5 failed"<<std::endl;
-            break;
-        }
-
-        // 6. Check $that
-        {
-            const std::string path_14 = ctx.path + "/transl";
-            Arvida::RDF::Context ctx_14(ctx, path_14);
-            Sord::URI node_14(ctx.model.world(), path_14);
-
-            triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "spatial:translation"), node_14);
-            if (!triple.is_valid())
-            {
-                std::cerr<<"Check 6 failed"<<std::endl;
-                break;
-            }
-            std::cerr << path_14 << ": " << triple.object.to_string() << std::endl;
-
-            //ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:translation"), Arvida::RDF::toRDF(ctx_14, node_14, value.getTranslation()));
-        }
-
-        // 7. Check $that
-        {
-            const std::string path_17 = ctx.path + "/rot";
-            Arvida::RDF::Context ctx_17(ctx, path_17);
-            Sord::URI node_17(ctx.model.world(), path_17);
-
-            triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "spatial:rotation"), node_17);
-            if (!triple.is_valid())
-            {
-                std::cerr << "Check 7 failed" << std::endl;
-                break;
-            }
-            std::cerr << path_17 << ": " << triple.object.to_string()<<std::endl;
-        }
-
-        std::cout<<"_this: " << _this.to_string() << std::endl;
-        std::cout<<"_b0: " << _b0.to_string() << std::endl;
-        std::cout<<"_b1: " << _b1.to_string() << std::endl;
-
-        /*
-        do {
-            std::cout << "Subject: " << iter.get_subject().to_string() << std::endl;
-            std::cout << "Predicate: " << iter.get_predicate().to_string() << std::endl;
-            std::cout << "Object: " << iter.get_object().to_string() << std::endl;
-        } while (!iter.next());
-        */
         ++i;
     }
 

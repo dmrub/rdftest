@@ -1,6 +1,8 @@
 #ifndef POSE_INCLUDED_HPP
 #define POSE_INCLUDED_HPP
 
+#include <ostream>
+
 struct UUID
 {
 
@@ -9,6 +11,10 @@ struct UUID
 class Rotation
 {
 public:
+
+    Rotation()
+        : rotation_{0, 0, 0, 0}
+    { }
 
     Rotation(double x, double y, double z, double w)
         : rotation_{x, y, z, w}
@@ -38,9 +44,19 @@ private:
     double rotation_[ 4 ] ;
 };
 
+std::ostream& operator<<(std::ostream& stream, const Rotation & value)
+{
+    stream << "[ " << value.getX() << ", " << value.getY() << ", " << value.getZ() << ", " << value.getW() << " ]";
+    return stream;
+}
+
 class Translation
 {
 public:
+
+    Translation()
+        : translation_{0, 0, 0}
+    { }
 
     Translation(double x, double y, double z)
         : translation_{x, y, z}
@@ -66,6 +82,11 @@ private:
     double translation_[ 3 ] ;
 };
 
+std::ostream& operator<<(std::ostream& stream, const Translation & value)
+{
+    stream << "[ " << value.getX() << ", " << value.getY() << ", " << value.getZ() << " ]";
+    return stream;
+}
 
 class Pose
 {
@@ -78,12 +99,22 @@ public:
 
     const Translation & getTranslation() const { return translation_; }
 
+    void setTranslation(const Translation &translation) { translation_ = translation; }
+
     const Rotation & getRotation() const { return rotation_; }
+
+    void setRotation(const Rotation &rotation) { rotation_ = rotation; }
 
 private:
     Translation translation_;
     Rotation rotation_ ;
 };
+
+std::ostream& operator<<(std::ostream& stream, const Pose & value)
+{
+    stream << "Pose { translation = " << value.getTranslation() << ", rotation = " << value.getRotation() << " }";
+    return stream;
+}
 
 class Device
 {
