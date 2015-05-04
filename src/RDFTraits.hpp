@@ -21,6 +21,42 @@ struct Context
     Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path) { }
 };
 
+class Triple
+{
+public:
+
+    Sord::Node subject;
+    Sord::Node predicate;
+    Sord::Node object;
+
+    Triple() : subject(), predicate(), object() { }
+
+    Triple(const Sord::Node &subject, const Sord::Node &predicate, const Sord::Node &object)
+        : subject(subject)
+        , predicate(predicate)
+        , object(object)
+    { }
+
+    bool is_valid() const
+    {
+        return subject.is_valid() && predicate.is_valid() && object.is_valid();
+    }
+};
+
+inline bool check_triple(Sord::Model &model, const Sord::Node &subject, const Sord::Node &predicate, const Sord::Node &object)
+{
+    Sord::Iter iter = model.find(subject, predicate, object);
+    return !iter.end();
+}
+
+inline Triple find_triple(Sord::Model &model, const Sord::Node &subject, const Sord::Node &predicate, const Sord::Node &object)
+{
+    Sord::Iter iter = model.find(subject, predicate, object);
+    if (iter.end())
+        return Triple();
+    return Triple(iter.get_subject(), iter.get_predicate(), iter.get_object());
+}
+
 template < class T >
 Node toRDF(const Context &ctx, const T &value)
 {
@@ -45,6 +81,12 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const double &value)
         sord_node_from_serd_node(ctx.model.world().c_obj(), ctx.model.world().prefixes().c_obj(), &val, &type, NULL),
         false);
     return _this;
+}
+
+template < class T >
+bool fromRDF(const Context &ctx, const NodeRef thisNode, T &value)
+{
+    return value.fromRDF(ctx, thisNode);
 }
 
 } // namespace Arvida

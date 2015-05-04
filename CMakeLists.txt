@@ -84,3 +84,6 @@ target_link_libraries(pose_sordmm seord)
 
 add_executable(pose_sordmm2 src/pose_sordmm2.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm2 seord)
+
+add_executable(pose_sordmm_reader src/pose_sordmm_reader.cpp ${LIBHEADERS})
+target_link_libraries(pose_sordmm_reader seord)
