@@ -14,7 +14,11 @@ typedef Sord::Node & NodeRef;
 struct Context
 {
     Sord::Model &model;
-    Context(Sord::Model &model) : model(model) { }
+    const std::string &path;
+
+    Context(Sord::Model &model, const std::string &path) : model(model), path(path) { }
+    Context(const Context &ctx) : model(ctx.model), path(ctx.path) { }
+    Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path) { }
 };
 
 template < class T >

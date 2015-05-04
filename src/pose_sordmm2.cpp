@@ -63,13 +63,14 @@ int main(int argc, char *argv[])
 
     Model model(world, "http://test.arvida.de/");
 
-    Arvida::RDF::Context ctx(model);
 
     std::cout << "Producing " << num << " poses" << std::endl;
 
     for (int i = 0; i < num; ++i)
     {
         const std::string uuid_url = "http://test.arvida.de/UUID" + std::to_string(i);
+
+        Arvida::RDF::Context ctx(model, uuid_url);
 
         URI pose_node(world, uuid_url);
 

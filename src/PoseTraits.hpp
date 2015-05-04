@@ -26,10 +26,10 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:w"), Arvida::RDF::toRDF(ctx, value.getW()));
-
-
     return _this;
 }
+
+
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &value)
 {
@@ -42,10 +42,10 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &val
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:x"), Arvida::RDF::toRDF(ctx, value.getX()));
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
-
-
     return _this;
 }
+
+
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
 {
@@ -58,12 +58,21 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
     ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), _b1);
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:RightHandedCartesianCoordinateSystem2D"));
     ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), _b0);
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:translation"), Arvida::RDF::toRDF(ctx, value.getTranslation()));
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:rotation"), Arvida::RDF::toRDF(ctx, value.getRotation()));
-
-
+    {
+        const std::string path_14 = ctx.path + "/transl";
+        Arvida::RDF::Context ctx_14(ctx, path_14);
+        Sord::URI node_14(ctx.model.world(), path_14);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:translation"), Arvida::RDF::toRDF(ctx_14, node_14, value.getTranslation()));
+    }
+    {
+        const std::string path_17 = ctx.path + "/rot";
+        Arvida::RDF::Context ctx_17(ctx, path_17);
+        Sord::URI node_17(ctx.model.world(), path_17);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:rotation"), Arvida::RDF::toRDF(ctx_17, node_17, value.getRotation()));
+    }
     return _this;
 }
+
 
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Device &value)
@@ -71,7 +80,6 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Device &value)
     using namespace Sord;
     Node _b0 = Node::blank_id(ctx.model.world());
     Node _b1 = Node::blank_id(ctx.model.world());
-
 
     return _this;
 }
