@@ -121,7 +121,8 @@ bool fromRDF(const Context &ctx, const NodeRef _this0, ::Translation &value)
 {
     using namespace Sord;
 
-    Arvida::RDF::Triple triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Translation3D"));
+    Arvida::RDF::Triple triple;
+    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Translation3D"));
 
     // 1. Check $this
     if (!triple.is_valid())

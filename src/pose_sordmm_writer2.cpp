@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         Arvida::RDF::toRDF(ctx, pose_node, pose);
     }
 
-    std::cout << "Writing poses" << std::endl;
+    std::cout << "Writing poses to pose_sordmm.ttl" << std::endl;
 
     model.write_to_file("pose_sordmm.ttl", SERD_TURTLE,
         (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));

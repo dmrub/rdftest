@@ -79,11 +79,11 @@ include_directories(
   seord/src/3rd/sord/src
   ${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(pose_sordmm src/pose_sordmm.cpp ${LIBHEADERS})
-target_link_libraries(pose_sordmm seord)
+add_executable(pose_sordmm_writer src/pose_sordmm_writer.cpp ${LIBHEADERS})
+target_link_libraries(pose_sordmm_writer seord)
 
-add_executable(pose_sordmm2 src/pose_sordmm2.cpp ${LIBHEADERS})
-target_link_libraries(pose_sordmm2 seord)
+add_executable(pose_sordmm_writer2 src/pose_sordmm_writer2.cpp ${LIBHEADERS})
+target_link_libraries(pose_sordmm_writer2 seord)
 
 add_executable(pose_sordmm_reader src/pose_sordmm_reader.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm_reader seord)

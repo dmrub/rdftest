@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
            MIDDLEWARENEWSBRIEF_PROFILER_TIME_UNITS,
            elapsed, double(elapsed)/num);
 
-    std::cout << "Writing poses" << std::endl;
+    std::cout << "Writing poses to file pose_sordmm.ttl" << std::endl;
 
     start = MIDDLEWARENEWSBRIEF_PROFILER_GET_TIME;
 
