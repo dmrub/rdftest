@@ -15,7 +15,7 @@ include(GitExternal)
 Git_External(
   ${PROJECT_SOURCE_DIR}/CMake/common
   https://github.com/Eyescale/CMake.git
-  subproject
+  master
   VERBOSE
 )
 
@@ -71,6 +71,8 @@ endif()
 # Add the subprojects to our project
 # args are : project name in subproject, path from here
 #--------------------------------------------------
+
+set(seord_SKIP_FIND 1)
 add_subproject(seord)
 
 include_directories(
@@ -87,3 +89,6 @@ target_link_libraries(pose_sordmm_writer2 seord)
 
 add_executable(pose_sordmm_reader src/pose_sordmm_reader.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm_reader seord)
+
+add_executable(kinect_writer src/kinect_writer.cpp ${LIBHEADERS})
+target_link_libraries(kinect_writer seord)
