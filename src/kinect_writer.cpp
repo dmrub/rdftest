@@ -14,7 +14,8 @@
 
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
-#include "Kinect.hpp"
+#include "KinectTraits.hpp"
+
 
 #define RDF(x) "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x
 #define SPATIAL(x) "http://vocab.arvida.de/2014/03/spatial/vocab#" x
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 
     Model model(world, "file:///example.com/");
 
-    std::cout << "Producing " << num << " poses" << std::endl;
+    std::cout << "Producing " << num << " kinect dataset(s)" << std::endl;
 
     auto leftElbowRotation = std::make_shared<::Rotation>(1, 2, 3, 4);
     auto leftLowerArmTranslation = std::make_shared<::Translation>(1, 2, 3);
@@ -56,6 +57,77 @@ int main(int argc, char *argv[])
     auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
     auto luaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
     auto luaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
+
+    std::vector< std::shared_ptr<::CoordinateSystem> > coordinateSystems;
+    coordinateSystems.push_back(llaCS1);
+    coordinateSystems.push_back(llaCS2);
+    coordinateSystems.push_back(luaCS1);
+    coordinateSystems.push_back(luaCS2);
+
+    auto leftElbow = std::make_shared<::Joint>();
+    leftElbow->setTargetCoordinateSystem(llaCS1);
+    leftElbow->setSourceCoordinateSystem(luaCS2);
+    leftElbow->setRotation(leftElbowRotation);
+
+    auto leftLowerArm = std::make_shared<::Bone>();
+    leftLowerArm->setSourceCoordinateSystem(llaCS1);
+    leftLowerArm->setTargetCoordinateSystem(llaCS2);
+    leftLowerArm->setTranslation(leftLowerArmTranslation);
+    leftLowerArm->setStartJoint(leftElbow);
+
+    auto leftUpperArm = std::make_shared<::Bone>();
+    leftUpperArm->setSourceCoordinateSystem(luaCS1);
+    leftUpperArm->setTargetCoordinateSystem(luaCS2);
+    leftUpperArm->setTranslation(leftUpperArmTranslation);
+    leftUpperArm->setEndJoint(leftElbow);
+
+    std::vector< std::shared_ptr<Pose> > poses;
+    poses.push_back(leftElbowRotation);
+    poses.push_back(leftLowerArmTranslation);
+    poses.push_back(leftUpperArmTranslation);
+
+    auto resc28 = std::make_shared<::Skeleton>();
+    std::vector< std::shared_ptr<Bone> > bones;
+    bones.push_back(leftLowerArm);
+    bones.push_back(leftUpperArm);
+    resc28->setBones(std::move(bones));
+
+    std::vector< std::shared_ptr<Joint> > joints;
+    joints.push_back(leftElbow);
+
+    resc28->setJoints(std::move(joints));
+
+    std::vector< std::shared_ptr<Segment> > roots;
+    roots.push_back(leftUpperArm);
+    resc28->setRoots(roots);
+
+    std::vector< std::shared_ptr<::Skeleton> > skeletons;
+    skeletons.push_back(resc28);
+
+    std::vector< std::shared_ptr<::Segment> > segments;
+    segments.push_back(leftLowerArm);
+    segments.push_back(leftElbow);
+    segments.push_back(leftUpperArm);
+
+    TrackingServiceProvider kinect;
+    kinect.getSkeletonTracker().setCoordinateSystems(std::move(coordinateSystems));
+    kinect.getSkeletonTracker().setPoses(std::move(poses));
+    kinect.getSkeletonTracker().setSegments(std::move(segments));
+    kinect.getSkeletonTracker().setSkeletons(std::move(skeletons));
+
+    {
+        const std::string url = "file:///example.com/";
+        Arvida::RDF::Context ctx(model, url);
+        URI kinect_node(world, url);
+
+        Arvida::RDF::toRDF(ctx, kinect_node, *leftElbowRotation);
+    }
+
+    std::cout << "Writing poses to kinect_sordmm.ttl" << std::endl;
+
+    model.write_to_file("kinect_sordmm.ttl", SERD_TURTLE,
+        (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));
+
 
 #if 0
     for (int i = 0; i < num; ++i)

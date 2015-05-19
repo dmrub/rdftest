@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-
+#include <utility>
 #include "arvida_pp_annotation.h"
 
 // CoordinateSystem
@@ -144,6 +144,22 @@ public:
 
     virtual ~Segment() { }
 
+    const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() { return _sourceCoordinateSystem; }
+
+    void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { _sourceCoordinateSystem = sourceCoordinateSystem; }
+
+    const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() { return _targetCoordinateSystem; }
+
+    void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { _targetCoordinateSystem = targetCoordinateSystem; }
+
+    const std::shared_ptr< Translation > & getTranslation() { return _translation; }
+
+    void setTranslation(const std::shared_ptr< Translation > & translation) { _translation = translation; }
+
+    const std::shared_ptr< Rotation > & getRotation() { return _rotation; }
+
+    void setRotation(const std::shared_ptr< Rotation > & rotation) { _rotation = rotation; }
+
 private:
     std::shared_ptr< CoordinateSystem > _sourceCoordinateSystem;
     std::shared_ptr< CoordinateSystem > _targetCoordinateSystem;
@@ -156,6 +172,7 @@ private:
 class Joint: public Segment
 {
 public:
+    Joint() { }
 };
 
 // Bone
@@ -163,6 +180,19 @@ public:
 class Bone: public Segment
 {
 public:
+
+    Bone()
+        : _startJoint()
+        , _endJoint()
+    { }
+
+    const std::shared_ptr< Joint > & getStartJoint() { return _startJoint; }
+
+    void setStartJoint(const std::shared_ptr< Joint > & startJoint) { _startJoint = startJoint; }
+
+    const std::shared_ptr< Joint > & getEndJoint() { return _endJoint; }
+
+    void setEndJoint(const std::shared_ptr< Joint > & endJoint) { _endJoint = endJoint; }
 
 private:
     std::shared_ptr< Joint > _startJoint;
@@ -177,8 +207,29 @@ class Skeleton
 public:
 
     const std::vector< std::shared_ptr<Bone> > & getBones() const { return _bones; }
+    void setBones(const std::vector< std::shared_ptr<Bone> > & bones)
+    {
+        _bones = bones;
+    }
+
+    void setBones(std::vector< std::shared_ptr<Bone> > && bones)
+    {
+        _bones = std::move(bones);
+    }
+
     const std::vector< std::shared_ptr<Joint> > & getJoints() const { return _joints; }
+    void setJoints(const std::vector< std::shared_ptr<Joint> > & joints)
+    {
+        _joints = joints;
+    }
+
+    void setJoints(std::vector< std::shared_ptr<Joint> > && joints)
+    {
+        _joints = std::move(joints);
+    }
+
     const std::vector< std::shared_ptr<Segment> > & getRoots() { return _roots; }
+    void setRoots(const std::vector< std::shared_ptr<Segment> > &roots) { _roots = roots; }
 
 private:
     std::vector< std::shared_ptr<Bone> > _bones;
@@ -192,11 +243,79 @@ class SkeletonTrackingService
 {
 public:
 
+    SkeletonTrackingService()
+        : coordinateSystems_()
+        , poses_()
+        , segments_()
+        , skeletons_()
+    { }
+
+    const std::vector< std::shared_ptr<CoordinateSystem> > & getCoordinateSystems() const
+    {
+        return coordinateSystems_;
+    }
+
+    void setCoordinateSystems(const std::vector< std::shared_ptr<CoordinateSystem> > & coordinateSystems)
+    {
+        coordinateSystems_ = coordinateSystems;
+    }
+
+    void setCoordinateSystems(std::vector< std::shared_ptr<CoordinateSystem> > && coordinateSystems )
+    {
+        coordinateSystems_ = std::move(coordinateSystems);
+    }
+
+    const std::vector< std::shared_ptr<Pose> > & getPoses() const
+    {
+        return poses_;
+    }
+
+    void setPoses(const std::vector< std::shared_ptr<Pose> > & poses)
+    {
+        poses_ = poses;
+    }
+
+    void setPoses(std::vector< std::shared_ptr<Pose> > && poses )
+    {
+        poses_ = std::move(poses);
+    }
+
+    const std::vector< std::shared_ptr<Segment> > & getSegments() const
+    {
+        return segments_;
+    }
+
+    void setSegments(const std::vector< std::shared_ptr<Segment> > & segments)
+    {
+        segments_ = segments;
+    }
+
+    void setSegments(std::vector< std::shared_ptr<Segment> > && segments )
+    {
+        segments_ = std::move(segments);
+    }
+
+
+    const std::vector< std::shared_ptr<Skeleton> > & getSkeletons() const
+    {
+        return skeletons_;
+    }
+
+    void setSkeletons(const std::vector< std::shared_ptr<Skeleton> > & skeletons)
+    {
+        skeletons_ = skeletons;
+    }
+
+    void setSkeletons(std::vector< std::shared_ptr<Skeleton> > && skeletons )
+    {
+        skeletons_ = std::move(skeletons);
+    }
+
 private:
-    std::vector< std::shared_ptr< CoordinateSystem > > coordinateSystems_;
+    std::vector< std::shared_ptr<CoordinateSystem> > coordinateSystems_;
     std::vector< std::shared_ptr<Pose> > poses_;
     std::vector< std::shared_ptr<Segment> > segments_;
-    std::vector< Skeleton > skeletons_;
+    std::vector< std::shared_ptr<Skeleton> > skeletons_;
 };
 
 class TrackingServiceProvider
@@ -204,6 +323,8 @@ class TrackingServiceProvider
 public:
 
     const SkeletonTrackingService & getSkeletonTracker() const { return skeletonTracker_; }
+
+    SkeletonTrackingService & getSkeletonTracker() { return skeletonTracker_; }
 
 private:
     SkeletonTrackingService skeletonTracker_;
