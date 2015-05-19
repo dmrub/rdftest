@@ -81,6 +81,19 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const double &value)
     return _this;
 }
 
+template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const float &value)
+{
+    const SerdNode val = serd_node_new_decimal(value, 7);
+    const SerdNode type = serd_node_from_string(SERD_URI, (const uint8_t*) SORD_NS_XSD "float");
+
+    _this = Sord::Node(ctx.model.world(),
+        sord_node_from_serd_node(ctx.model.world().c_obj(), ctx.model.world().prefixes().c_obj(), &val, &type, NULL),
+        false);
+    return _this;
+}
+
+
 template < class T >
 bool fromRDF(const Context &ctx, const NodeRef thisNode, T &value)
 {
@@ -89,6 +102,21 @@ bool fromRDF(const Context &ctx, const NodeRef thisNode, T &value)
 
 template <>
 inline bool fromRDF(const Context &ctx, const NodeRef _this0, double &value)
+{
+    if (_this0.is_literal_type(SORD_NS_XSD "integer") ||
+        _this0.is_literal_type(SORD_NS_XSD "decimal") ||
+        _this0.is_literal_type(SORD_NS_XSD "double"))
+    {
+        char* endptr;
+        value = serd_strtod(_this0.to_c_string(), &endptr);
+        return true;
+    }
+
+    return false;
+}
+
+template <>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, float &value)
 {
     if (_this0.is_literal_type(SORD_NS_XSD "integer") ||
         _this0.is_literal_type(SORD_NS_XSD "decimal") ||

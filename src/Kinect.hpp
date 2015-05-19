@@ -50,10 +50,10 @@ Rotation: public Pose
 public:
 
     Rotation()
-        : rotation_{0, 0, 0, 0}
+        : rotation_{0.0f, 0.0f, 0.0f, 0.0f}
     { }
 
-    Rotation(double x, double y, double z, double w)
+    Rotation(float x, float y, float z, float w)
         : rotation_{x, y, z, w}
     { }
 
@@ -62,31 +62,31 @@ public:
     { }
 
     RdfStmt(_:2, "maths:x", $that)
-    double getX() const  { return rotation_[0]; }
+    float getX() const  { return rotation_[0]; }
 
     RdfStmt(_:2, "maths:y", $that)
-    double getY() const { return rotation_[1]; }
+    float getY() const { return rotation_[1]; }
 
     RdfStmt(_:2, "maths:z", $that)
-    double getZ() const { return rotation_[2]; }
+    float getZ() const { return rotation_[2]; }
 
     RdfStmt(_:2, "maths:w", $that)
-    double getW() const { return rotation_[3]; }
+    float getW() const { return rotation_[3]; }
 
     RdfStmt(_:2, "maths:x", $that)
-    void setX(double x) { rotation_[0] = x; }
+    void setX(float x) { rotation_[0] = x; }
 
     RdfStmt(_:2, "maths:y", $that)
-    void setY(double y) { rotation_[1] = y; }
+    void setY(float y) { rotation_[1] = y; }
 
     RdfStmt(_:2, "maths:z", $that)
-    void setZ(double z) { rotation_[2] = z; }
+    void setZ(float z) { rotation_[2] = z; }
 
     RdfStmt(_:2, "maths:w", $that)
-    void setW(double w) { rotation_[3] = w; }
+    void setW(float w) { rotation_[3] = w; }
 
 private:
-    double rotation_[ 4 ] ;
+    float rotation_[ 4 ] ;
 };
 
 // Translation
@@ -103,10 +103,10 @@ Translation: public Pose
 public:
 
     Translation()
-        : translation_{0, 0, 0}
+        : translation_{0.0f, 0.0f, 0.0f}
     { }
 
-    Translation(double x, double y, double z)
+    Translation(float x, float y, float z)
         : translation_{x, y, z}
     { }
 
@@ -115,25 +115,25 @@ public:
     { }
 
     RdfStmt(_:2, "maths:x", $that)
-    double getX() const  { return translation_[0]; }
+    float getX() const  { return translation_[0]; }
 
     RdfStmt(_:2, "maths:y", $that)
-    double getY() const { return translation_[1]; }
+    float getY() const { return translation_[1]; }
 
     RdfStmt(_:2, "maths:z", $that)
-    double getZ() const { return translation_[2]; }
+    float getZ() const { return translation_[2]; }
 
     RdfStmt(_:2, "maths:x", $that)
-    void setX(double x) { translation_[0] = x; }
+    void setX(float x) { translation_[0] = x; }
 
     RdfStmt(_:2, "maths:y", $that)
-    void setY(double y) { translation_[1] = y; }
+    void setY(float y) { translation_[1] = y; }
 
     RdfStmt(_:2, "maths:z", $that)
-    void setZ(double z) { translation_[2] = z; }
+    void setZ(float z) { translation_[2] = z; }
 
 private:
-    double translation_[ 3 ] ;
+    float translation_[ 3 ] ;
 };
 
 // Segment
