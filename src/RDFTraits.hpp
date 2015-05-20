@@ -3,6 +3,7 @@
 
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
+#include <memory>
 
 namespace Arvida {
 namespace RDF {
@@ -59,15 +60,40 @@ template < class T >
 Node toRDF(const Context &ctx, const T &value)
 {
     Sord::Node valueNode = Sord::Node::blank_id(ctx.model.world());
-    return toRDF<T>(ctx, valueNode, value);
+    return toRDF(ctx, valueNode, value);
 }
 
 template < class T >
-NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
+inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
 {
     return value.toRDF(ctx, thisNode);
 }
 
+template < class T >
+inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::shared_ptr<const T> &value)
+{
+    if (value)
+        return toRDF(ctx, thisNode, *value);
+    else
+    {
+        if (!thisNode.is_blank())
+            thisNode = Sord::Node::blank_id(ctx.model.world());
+        return thisNode;
+    }
+}
+
+template < class T >
+inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::shared_ptr<T> &value)
+{
+    if (value)
+        return toRDF(ctx, thisNode, *value);
+    else
+    {
+        if (!thisNode.is_blank())
+            thisNode = Sord::Node::blank_id(ctx.model.world());
+        return thisNode;
+    }
+}
 
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const double &value)

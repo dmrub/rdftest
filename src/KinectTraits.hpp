@@ -1,184 +1,93 @@
-#ifndef KINECT_TRAITS
-#define KINECT_TRAITS
+/*
+ * KinectTraits.hpp
+ *
+ *  Created on: May 20, 2015
+ *      Author: Dmitri Rubinstein
+ */
 
-#include "Kinect.hpp"
-#include "RDFTraits.hpp"
+#ifndef KINECTTRAITS_HPP_INCLUDED
+#define KINECTTRAITS_HPP_INCLUDED
 
-// Module name: CodegenExample
+#include "GenKinectTraits.hpp"
 
 namespace Arvida
 {
 namespace RDF
 {
 
-template<>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
+class CoordinateSystemVisitor : public Visitor<const CoordinateSystem, NodeRef, const Context &, NodeRef>
 {
-    using namespace Sord;
-    Node _b0 = Node::blank_id(ctx.model.world());
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Rotation3D"));
+public:
+    META_Visitor(CoordinateSystemVisitor, toRDF)
 
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "vom:quantityValue"), _b0);
+    CoordinateSystemVisitor()
+    {
+        // Set visitables classes (no need to specify base class)
+        META_Visitables(RightHandedCartesianCoordinateSystem3D);
+    }
 
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "vom:quantityKind"), Curie(ctx.model.world(), "vom:Angle"));
+protected:
+    NodeRef toRDF(const CoordinateSystem & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
 
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Vector4D"));
+    NodeRef toRDF(const RightHandedCartesianCoordinateSystem3D & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+};
 
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Quaternion"));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:x"), Arvida::RDF::toRDF(ctx, value.getX()));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:w"), Arvida::RDF::toRDF(ctx, value.getW()));
-
-    return _this;
-} 
-
-template<>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &value)
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::CoordinateSystem &value)
 {
-    using namespace Sord;
-    Node _b0 = Node::blank_id(ctx.model.world());
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Translation3D"));
+    CoordinateSystemVisitor v;
+    return v(value, ctx, _this);
+}
 
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "vom:quantityValue"), _b0);
-
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "vom:quantityKind"), Curie(ctx.model.world(), "vom:Length"));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Vector3D"));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:x"), Arvida::RDF::toRDF(ctx, value.getX()));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
-
-    ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
-
-    return _this;
-} 
-
-template<>
-inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Rotation &value)
+class SegmentVisitor : public Visitor<const Segment, NodeRef, const Context &, NodeRef>
 {
-    using namespace Sord;
-    Arvida::RDF::Triple triple;
+public:
+    META_Visitor(SegmentVisitor, toRDF)
 
-    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Rotation3D"));
-    if (!triple.is_valid())
-        return false;
-    const Node _this = triple.subject;
-
-    triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "vom:quantityValue"), Node());
-    if (!triple.is_valid())
-        return false;
-    const Node _b0 = triple.object;
-    triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "vom:quantityKind"), Curie(ctx.model.world(), "vom:Angle"));
-    if (!triple.is_valid())
-        return false;
-
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Vector4D"));
-    if (!triple.is_valid())
-        return false;
-
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Quaternion"));
-    if (!triple.is_valid())
-        return false;
-
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:x"), Node());
-    if (!triple.is_valid())
-        return false;
+    SegmentVisitor()
     {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setX(tmp_value);
+        // Set visitables classes (no need to specify base class)
+        META_Visitables(Joint, Bone);
     }
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:y"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setY(tmp_value);
-    }
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:z"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setZ(tmp_value);
-    }
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:w"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setW(tmp_value);
-    }
-    return true;
-} 
 
-template<>
-inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Translation &value)
+protected:
+    NodeRef toRDF(const Segment & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+    NodeRef toRDF(const Joint & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+    NodeRef toRDF(const Bone & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+};
+
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Segment &value)
 {
-    using namespace Sord;
-    Arvida::RDF::Triple triple;
+    SegmentVisitor v;
+    return v(value, ctx, _this);
+}
 
-    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Translation3D"));
-    if (!triple.is_valid())
-        return false;
-    const Node _this = triple.subject;
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Joint &value)
+{
+    return toRDF(ctx, _this, static_cast<const ::Segment &>(value));
+}
 
-    triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "vom:quantityValue"), Node());
-    if (!triple.is_valid())
-        return false;
-    const Node _b0 = triple.object;
-    triple = Arvida::RDF::find_triple(ctx.model, _this, Curie(ctx.model.world(), "vom:quantityKind"), Curie(ctx.model.world(), "vom:Length"));
-    if (!triple.is_valid())
-        return false;
+}
+}
 
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "maths:Vector3D"));
-    if (!triple.is_valid())
-        return false;
-
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:x"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setX(tmp_value);
-    }
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:y"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setY(tmp_value);
-    }
-    triple = Arvida::RDF::find_triple(ctx.model, _b0, Curie(ctx.model.world(), "maths:z"), Node());
-    if (!triple.is_valid())
-        return false;
-    {
-        double tmp_value;
-        if (!Arvida::RDF::fromRDF(ctx, triple.object, tmp_value))
-            return false;
-        value.setZ(tmp_value);
-    }
-    return true;
-} 
-
-} // namespace Arvida
-} // namespace RDF
-
-#endif
+#endif /* KINECTTRAITS_HPP_INCLUDED */

@@ -24,6 +24,7 @@
 #define VOM(x) "http://vocab.arvida.de/2014/03/vom/vocab#" x
 #define MEA(x) "http://vocab.arvida.de/2014/03/mea/vocab#" x
 #define XSD(x) "http://www.w3.org/2001/XMLSchema#" x
+#define SKEL(x) "http://vocab.arvida.de/2015/05/skel/vocab#" x
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     world.add_prefix("vom", VOM(""));
     world.add_prefix("mea", MEA(""));
     world.add_prefix("xsd", XSD(""));
+    world.add_prefix("skel", SKEL(""));
 
     Model model(world, "file:///example.com/");
 
@@ -120,7 +122,7 @@ int main(int argc, char *argv[])
         Arvida::RDF::Context ctx(model, url);
         URI kinect_node(world, url);
 
-        Arvida::RDF::toRDF(ctx, kinect_node, *leftElbowRotation);
+        Arvida::RDF::toRDF(ctx, kinect_node, *leftElbow);
     }
 
     std::cout << "Writing poses to kinect_sordmm.ttl" << std::endl;

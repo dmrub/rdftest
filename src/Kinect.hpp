@@ -6,22 +6,33 @@
 #include <utility>
 #include "arvida_pp_annotation.h"
 
+#include "visitor/Visitor.hpp"
+#include "visitor/Visitable.hpp"
+
 // CoordinateSystem
 
 class
 
-CoordinateSystem
+RdfStmt($this, "rdf:type", "maths:CoordinateSystem")
+
+CoordinateSystem : public Visitable<CoordinateSystem>
 {
+public:
+    META_BaseVisitable(CoordinateSystem)
 public:
     virtual ~CoordinateSystem() { }
 };
 
 // RightHandedCartesianCoordinateSystem3D
 
-class RightHandedCartesianCoordinateSystem3D: public CoordinateSystem
+class
+
+RdfStmt($this, "rdf:type", "maths:RightHandedCartesianCoordinateSystem3D")
+
+RightHandedCartesianCoordinateSystem3D : public CoordinateSystem
 {
 public:
-
+    META_Visitable(RightHandedCartesianCoordinateSystem3D, CoordinateSystem)
 private:
 };
 
@@ -138,25 +149,33 @@ private:
 
 // Segment
 
-class Segment
+class Segment : public Visitable<Segment>
 {
+public:
+    META_BaseVisitable(Segment)
 public:
 
     virtual ~Segment() { }
 
-    const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() { return _sourceCoordinateSystem; }
+    RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
+    RdfPath("kinect/skelTracker/coordinateSystems/resc28")
+    const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return _sourceCoordinateSystem; }
 
     void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { _sourceCoordinateSystem = sourceCoordinateSystem; }
 
-    const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() { return _targetCoordinateSystem; }
+    RdfStmt($this, "spatial:targetCoordinateSystem", $that)
+    RdfPath("kinect/skelTracker/coordinateSystems/resc28")
+    const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return _targetCoordinateSystem; }
 
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { _targetCoordinateSystem = targetCoordinateSystem; }
 
-    const std::shared_ptr< Translation > & getTranslation() { return _translation; }
+    RdfStmt($this, "spatial:translation", $that)
+    const std::shared_ptr< Translation > & getTranslation() const { return _translation; }
 
     void setTranslation(const std::shared_ptr< Translation > & translation) { _translation = translation; }
 
-    const std::shared_ptr< Rotation > & getRotation() { return _rotation; }
+    RdfStmt($this, "spatial:rotation", $that)
+    const std::shared_ptr< Rotation > & getRotation() const { return _rotation; }
 
     void setRotation(const std::shared_ptr< Rotation > & rotation) { _rotation = rotation; }
 
@@ -169,16 +188,28 @@ private:
 
 // Joint
 
-class Joint: public Segment
+class
+
+RdfStmt($this, "rdf:type", "skel:Joint")
+
+Joint: public Segment
 {
+public:
+    META_Visitable(Joint, Segment)
 public:
     Joint() { }
 };
 
 // Bone
 
-class Bone: public Segment
+class
+
+RdfStmt($this, "rdf:type", "skel:Bone")
+
+Bone: public Segment
 {
+public:
+    META_Visitable(Joint, Segment)
 public:
 
     Bone()
@@ -186,11 +217,13 @@ public:
         , _endJoint()
     { }
 
-    const std::shared_ptr< Joint > & getStartJoint() { return _startJoint; }
+    RdfStmt($this, "skel:startJoint", $that)
+    const std::shared_ptr< Joint > & getStartJoint() const { return _startJoint; }
 
     void setStartJoint(const std::shared_ptr< Joint > & startJoint) { _startJoint = startJoint; }
 
-    const std::shared_ptr< Joint > & getEndJoint() { return _endJoint; }
+    RdfStmt($this, "skel:endJoint", $that)
+    const std::shared_ptr< Joint > & getEndJoint() const { return _endJoint; }
 
     void setEndJoint(const std::shared_ptr< Joint > & endJoint) { _endJoint = endJoint; }
 
