@@ -56,6 +56,25 @@ inline Triple find_triple(Sord::Model &model, const Sord::Node &subject, const S
     return Triple(iter.get_subject(), iter.get_predicate(), iter.get_object());
 }
 
+// pathOf
+
+template < class T >
+inline std::string pathOf(const Context &ctx, const T &value)
+{
+    return "";
+}
+
+template < class T >
+inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
+{
+    if (value)
+        return pathOf(ctx, *value);
+    else
+        return "";
+}
+
+// toRDF
+
 template < class T >
 Node toRDF(const Context &ctx, const T &value)
 {
@@ -67,19 +86,6 @@ template < class T >
 inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
 {
     return value.toRDF(ctx, thisNode);
-}
-
-template < class T >
-inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::shared_ptr<const T> &value)
-{
-    if (value)
-        return toRDF(ctx, thisNode, *value);
-    else
-    {
-        if (!thisNode.is_blank())
-            thisNode = Sord::Node::blank_id(ctx.model.world());
-        return thisNode;
-    }
 }
 
 template < class T >

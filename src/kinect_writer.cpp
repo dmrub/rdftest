@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
     auto leftLowerArmTranslation = std::make_shared<::Translation>(1, 2, 3);
     auto leftUpperArmTranslation = std::make_shared<::Translation>(4, 5, 6);
 
-    auto llaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
-    auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
-    auto luaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
-    auto luaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>();
+    auto llaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS1");
+    auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS2");
+    auto luaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("luaCS1");
+    auto luaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("luaCS2");
 
     std::vector< std::shared_ptr<::CoordinateSystem> > coordinateSystems;
     coordinateSystems.push_back(llaCS1);

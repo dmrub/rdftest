@@ -19,45 +19,6 @@
 #ifndef ARVIDA_PP_ANNOTATION_H_INCLUDED
 #define ARVIDA_PP_ANNOTATION_H_INCLUDED
 
-#ifdef __arvida_parse__
-
-#if 0
-#include <stddef.h>
-#include <stdint.h>
-
-typedef ssize_t _arvida_ssize_t __attribute__((ext_vector_type(1)));
-#define ssize_t _arvida_ssize_t
-
-typedef size_t _arvida_size_t __attribute__((ext_vector_type(1)));
-#define size_t _arvida_size_t
-
-typedef int8_t _arvida_int8_t __attribute__((ext_vector_type(1)));
-#define int8_t _arvida_int8_t
-
-typedef uint8_t _arvida_uint8_t __attribute__((ext_vector_type(1)));
-#define uint8_t _arvida_uint8_t
-
-typedef int16_t _arvida_int16_t __attribute__((ext_vector_type(1)));
-#define int16_t _arvida_int16_t
-
-typedef uint16_t _arvida_uint16_t __attribute__((ext_vector_type(1)));
-#define uint16_t _arvida_uint16_t
-
-typedef int32_t _arvida_int32_t __attribute__((ext_vector_type(1)));
-#define int32_t _arvida_int32_t
-
-typedef uint32_t _arvida_uint32_t __attribute__((ext_vector_type(1)));
-#define uint32_t _arvida_uint32_t
-
-typedef int64_t _arvida_int64_t __attribute__((ext_vector_type(1)));
-#define int64_t _arvida_int64_t
-
-typedef uint64_t _arvida_uint64_t __attribute__((ext_vector_type(1)));
-#define uint64_t _arvida_uint64_t
-#endif
-
-#endif
-
 // Macros from Boost C++ Libraries
 
 //
@@ -82,69 +43,7 @@ typedef uint64_t _arvida_uint64_t __attribute__((ext_vector_type(1)));
 
 #define ARVIDA_UNIQUE(x) ARVIDA_JOIN(x, __COUNTER__)
 
-// This is a customized macro added into arvida-preprocessor, we use this to distinguish a ARVIDA preprocessor scanning
-// from a normal compiling using clang as compiler.
-// This can help cut normal compiling time since starting from XCode 4.3, clang has become the official
-// compiler on Mac OS X
 #ifdef __arvida_parse__
-
-
-    //
-    // Injects a unique structure within the arvida_internal namespace that only the Clang frontend
-    // can see so that it can register the specified symbol for reflection.
-    // Can only be called from the global namespace and results in the primitive and any children
-    // being fully reflected.
-    //
-    #define arvida_reflect(name)                     \
-                                                    \
-        namespace arvida_internal                    \
-        {                                           \
-            struct                                  \
-            __attribute__((annotate("full-"#name))) \
-            ARVIDA_UNIQUE(cldb_reflect) { };         \
-        }
-
-
-    //
-    // Similar to arvida_reflect with the only difference being that the primitive being specified
-    // is being partially reflected. Anything that is a child of that primitive has to be
-    // explicitly reflected as a result.
-    //
-    #define arvida_reflect_part(name)                \
-                                                    \
-        namespace arvida_internal                    \
-        {                                           \
-            struct                                  \
-            __attribute__((annotate("part-"#name))) \
-            ARVIDA_UNIQUE(cldb_reflect) { }; \
-        }
-
-
-    //
-    // A container must have iterators if you want to use reflection to inspect it. Call this from
-    // the global namespace in the neighbourhood of any iterator implementations and it will
-    // partially reflect the iterators and allow the parent container to be used with reflection.
-    //
-    #define arvida_container_iterators(container, read_iterator, write_iterator, keyinfo)                            \
-        arvida_reflect_part(read_iterator)                                                                           \
-        arvida_reflect_part(write_iterator)                                                                          \
-        namespace arvida_internal                                                                                    \
-        {                                                                                                           \
-            struct                                                                                                  \
-            __attribute__((annotate("container-" #container "-" #read_iterator "-" #write_iterator "-" #keyinfo)))  \
-            ARVIDA_UNIQUE(container_info) { };                                                               \
-        }
-
-
-    #define arvida_attr(...) __attribute__((annotate("attr:" #__VA_ARGS__)))
-    #define arvida_push_attr(...) struct ARVIDA_UNIQUE(push_attr) { } __attribute__((annotate(#__VA_ARGS__)));
-    #define arvida_pop_attr(...) struct ARVIDA_UNIQUE(pop_attr) { } __attribute__((annotate(#__VA_ARGS__)));
-
-
-    //
-    // Clang does not need to see these
-    //
-    #define arvida_impl_class(scoped_type)
 
 #ifdef __cplusplus
 extern "C"
@@ -175,36 +74,6 @@ void   arvida_reflect_object_ext(unsigned long, ...);
     ARVIDA_UNIQUE(arvida_reflect) { };
 
 #else
-
-
-    //
-    // The main compiler does not need to see these
-    //
-    #define arvida_reflect(name)
-    #define arvida_reflect_part(name)
-    #define arvida_container_iterators(container, read_iterator, write_iterator, keyinfo)
-    #define arvida_attr(...)
-    #define arvida_push_attr(...)
-    #define arvida_pop_attr(...)
-
-
-    //
-    // Introduces overloaded construction and destruction functions into the ARVIDA::internal
-    // namespace for the type you specify. These functions end up in the list of methods
-    // in the specified type for easy access.
-    // This can only be used from global namespace.
-    //
-    #define arvida_impl_class(type)                              \
-                                                                \
-        ARVIDA_API void arvidaConstructObject(type* object)       \
-        {                                                       \
-            ARVIDA::internal::CallConstructor(object);           \
-        }                                                       \
-        ARVIDA_API void arvidaDestructObject(type* object)        \
-        {                                                       \
-            ARVIDA::internal::CallDestructor(object);            \
-        }                                                       \
-
 
 #define arvida_reflect_object(T)
 #define arvida_reflect_type(T)
@@ -237,9 +106,11 @@ typedef struct ArvidaType ArvidaType;
 #define ArvidaMemberAnnotationEnd() __attribute__((annotate(  ARVIDA_UNIQUE_PREFIX("eop") )))
 
 #define RdfPath(path)  ArvidaMemberAnnotationBegin("path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
+#define RdfUseVisitor() ArvidaMemberAnnotationBegin("use-visitor") ArvidaMemberAnnotationEnd()
+#define RdfInclude(include) ArvidaMemberAnnotationBegin("include") ArvidaMemberAnnotation(include) ArvidaMemberAnnotationEnd()
 
-#define RdfStmt(a, b, c)                         \
-    ArvidaMemberAnnotationBegin("triple")         \
+#define RdfStmt(a, b, c)                           \
+    ArvidaMemberAnnotationBegin("triple")          \
     ArvidaMemberAnnotation(ARVIDA_STRINGIZE(a))    \
     ArvidaMemberAnnotation(ARVIDA_STRINGIZE(b))    \
     ArvidaMemberAnnotation(ARVIDA_STRINGIZE(c))    \
@@ -258,17 +129,6 @@ typedef struct ArvidaType ArvidaType;
 #define arvida_user_api(api_name, func) "arvida-user-api", #api_name, sizeof(func), "arvida-eop"
 #define arvida_struct_array_member(ptr_member_name, size_member_name) \
     "arvida-struct-array-member", #ptr_member_name, #size_member_name, "arvida-eop"
-#define arvida_declare_func(name, ...)                                                                           \
-    ARVIDA_DECL_FUNC_OBJ(name);                                                                                  \
-    ARVIDA_BEGIN_EXTERN_C                                                                                        \
-    static ARVIDA_Result ARVIDA_JOIN(_kpp_,name)(ARVIDA_FUNC_OBJ(name) arvida_func_object, __VA_ARGS__) { return ARVIDA_SUCCESS; }  \
-    ARVIDA_END_EXTERN_C                                                                                          \
-    arvida_declare_object(ARVIDA_JOIN(_kpp_,name))
-#define arvida_declare_service(name, ...)                                                                        \
-    ARVIDA_BEGIN_EXTERN_C                                                                                        \
-    static ARVIDA_Result ARVIDA_JOIN(_kpp_,name)(ARVIDA_ServiceFuncObj *arvida_func_object, __VA_ARGS__) { return ARVIDA_SUCCESS; }    \
-    ARVIDA_END_EXTERN_C                                                                                          \
-    arvida_declare_object(ARVIDA_JOIN(_kpp_,name))
 
 #define arvida_annotate_object(T, ...) _arvida_decls( arvida_reflect_object_ext(T, __VA_ARGS__); )
 
@@ -280,6 +140,12 @@ typedef struct ArvidaType ArvidaType;
 
 #define arvida_member_path(member_name, path)                           \
         "arvida-member-path", #member_name, path, "arvida-eop"
+
+#define arvida_class_use_visitor() \
+        "arvida-class-use-visitor", "arvida-eop"
+
+#define arvida_class_include(include) \
+        "arvida-class-include", ARVIDA_STRINGIZE(include), "arvida-eop"
 
 #define arvida_object_semantic(semantic_value) \
             "arvida-object-semantic", semantic_value, "arvida-eop"
@@ -304,7 +170,8 @@ typedef struct ArvidaType ArvidaType;
 #define ArvidaMemberAnnotationEnd()
 
 #define RdfPath(path)
-
+#define RdfUseVisitor()
+#define RdfInclude(include)
 #define RdfStmt(a, b, c)
 
 #define _arvida_decls(decls)
@@ -314,11 +181,11 @@ typedef struct ArvidaType ArvidaType;
 #define arvida_declare_struct_with_api(T, ...)
 #define arvida_user_api(api_name, func)
 #define arvida_struct_array_member(ptr_type_name, ptr_member_name, size_type_name, size_member_name)
-#define arvida_declare_func(name, ...)
-#define arvida_declare_service(name, ...)
 
 #define arvida_annotate_object(T, ...)
 #define arvida_class_stmt(a, b, c)
+#define arvida_class_use_visitor()
+#define arvida_class_include(include)
 #define arvida_member_stmt(member_name, a, b, c)
 #define arvida_member_path(member_name, path)
 

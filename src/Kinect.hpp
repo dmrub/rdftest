@@ -13,6 +13,7 @@
 
 class
 
+RdfUseVisitor()
 RdfStmt($this, "rdf:type", "maths:CoordinateSystem")
 
 CoordinateSystem : public Visitable<CoordinateSystem>
@@ -20,7 +21,15 @@ CoordinateSystem : public Visitable<CoordinateSystem>
 public:
     META_BaseVisitable(CoordinateSystem)
 public:
+
+    CoordinateSystem(const std::string &name) : name_(name) { }
+
+    const std::string & getName() const { return name_; }
+
     virtual ~CoordinateSystem() { }
+
+private:
+    std::string name_;
 };
 
 // RightHandedCartesianCoordinateSystem3D
@@ -33,6 +42,9 @@ RightHandedCartesianCoordinateSystem3D : public CoordinateSystem
 {
 public:
     META_Visitable(RightHandedCartesianCoordinateSystem3D, CoordinateSystem)
+
+    RightHandedCartesianCoordinateSystem3D(const std::string &name) : CoordinateSystem(name) { }
+
 private:
 };
 
@@ -149,7 +161,11 @@ private:
 
 // Segment
 
-class Segment : public Visitable<Segment>
+class
+
+RdfUseVisitor()
+
+Segment : public Visitable<Segment>
 {
 public:
     META_BaseVisitable(Segment)
@@ -158,13 +174,13 @@ public:
     virtual ~Segment() { }
 
     RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
-    RdfPath("kinect/skelTracker/coordinateSystems/resc28")
+    RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return _sourceCoordinateSystem; }
 
     void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { _sourceCoordinateSystem = sourceCoordinateSystem; }
 
     RdfStmt($this, "spatial:targetCoordinateSystem", $that)
-    RdfPath("kinect/skelTracker/coordinateSystems/resc28")
+    RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return _targetCoordinateSystem; }
 
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { _targetCoordinateSystem = targetCoordinateSystem; }
