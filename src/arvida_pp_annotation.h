@@ -106,6 +106,7 @@ typedef struct ArvidaType ArvidaType;
 #define ArvidaMemberAnnotationEnd() __attribute__((annotate(  ARVIDA_UNIQUE_PREFIX("eop") )))
 
 #define RdfPath(path)  ArvidaMemberAnnotationBegin("path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
+#define RdfAbsolutePath(path)  ArvidaMemberAnnotationBegin("absolute-path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
 #define RdfUseVisitor() ArvidaMemberAnnotationBegin("use-visitor") ArvidaMemberAnnotationEnd()
 #define RdfInclude(include) ArvidaMemberAnnotationBegin("include") ArvidaMemberAnnotation(include) ArvidaMemberAnnotationEnd()
 
@@ -141,6 +142,9 @@ typedef struct ArvidaType ArvidaType;
 #define arvida_member_path(member_name, path)                           \
         "arvida-member-path", #member_name, path, "arvida-eop"
 
+#define arvida_member_absolute_path(member_name, path)                           \
+        "arvida-member-absolute-path", #member_name, path, "arvida-eop"
+
 #define arvida_class_use_visitor() \
         "arvida-class-use-visitor", "arvida-eop"
 
@@ -170,6 +174,7 @@ typedef struct ArvidaType ArvidaType;
 #define ArvidaMemberAnnotationEnd()
 
 #define RdfPath(path)
+#define RdfAbsolutePath(path)
 #define RdfUseVisitor()
 #define RdfInclude(include)
 #define RdfStmt(a, b, c)
@@ -188,6 +193,7 @@ typedef struct ArvidaType ArvidaType;
 #define arvida_class_include(include)
 #define arvida_member_stmt(member_name, a, b, c)
 #define arvida_member_path(member_name, path)
+#define arvida_member_absolute_path(member_name, path)
 
 #define arvida_field_semantic(field_name, semantic_value)
 #define arvida_member_semantic(member_name, semantic_value)

@@ -88,14 +88,14 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Segment &va
     using namespace Sord;
     {
         const auto & _that = value.getSourceCoordinateSystem();
-        const std::string path_3 = ctx.path + "kinect/skelTracker/coordinateSystems/resc28/" + (_that ? _that->getName() : "");
+        const std::string path_3 = "file:///example.com/kinect/skelTracker/coordinateSystems/" + (_that ? _that->getName() : "");
         Arvida::RDF::Context ctx_3(ctx, path_3);
         Sord::URI node_3(ctx.model.world(), path_3);
         ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), Arvida::RDF::toRDF(ctx_3, node_3, _that));
     }
     {
         const auto & _that = value.getTargetCoordinateSystem();
-        const std::string path_7 = ctx.path + "kinect/skelTracker/coordinateSystems/resc28/" + (_that ? _that->getName() : "");
+        const std::string path_7 = "file:///example.com/kinect/skelTracker/coordinateSystems/" + (_that ? _that->getName() : "");
         Arvida::RDF::Context ctx_7(ctx, path_7);
         Sord::URI node_7(ctx.model.world(), path_7);
         ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), Arvida::RDF::toRDF(ctx_7, node_7, _that));

@@ -51,14 +51,14 @@ int main(int argc, char *argv[])
 
     std::cout << "Producing " << num << " kinect dataset(s)" << std::endl;
 
-    auto leftElbowRotation = std::make_shared<::Rotation>("leftElbowRotation", 1, 2, 3, 4);
-    auto leftLowerArmTranslation = std::make_shared<::Translation>("leftLowerArmTranslation", 1, 2, 3);
-    auto leftUpperArmTranslation = std::make_shared<::Translation>("leftUpperArmTranslation", 4, 5, 6);
+    auto leftElbowRotation = std::make_shared<::Rotation>("resc28/leftElbowRotation", 1, 2, 3, 4);
+    auto leftLowerArmTranslation = std::make_shared<::Translation>("resc28/leftLowerArmTranslation", 1, 2, 3);
+    auto leftUpperArmTranslation = std::make_shared<::Translation>("resc28/leftUpperArmTranslation", 4, 5, 6);
 
-    auto llaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS1");
-    auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS2");
-    auto luaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("luaCS1");
-    auto luaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("luaCS2");
+    auto llaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("resc28/llaCS1");
+    auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("resc28/llaCS2");
+    auto luaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("resc28/luaCS1");
+    auto luaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("resc28/luaCS2");
 
     std::vector< std::shared_ptr<::CoordinateSystem> > coordinateSystems;
     coordinateSystems.push_back(llaCS1);
@@ -66,18 +66,18 @@ int main(int argc, char *argv[])
     coordinateSystems.push_back(luaCS1);
     coordinateSystems.push_back(luaCS2);
 
-    auto leftElbow = std::make_shared<::Joint>("leftElbow");
+    auto leftElbow = std::make_shared<::Joint>("resc28/leftElbow");
     leftElbow->setTargetCoordinateSystem(llaCS1);
     leftElbow->setSourceCoordinateSystem(luaCS2);
     leftElbow->setRotation(leftElbowRotation);
 
-    auto leftLowerArm = std::make_shared<::Bone>("leftLowerArm");
+    auto leftLowerArm = std::make_shared<::Bone>("resc28/leftLowerArm");
     leftLowerArm->setSourceCoordinateSystem(llaCS1);
     leftLowerArm->setTargetCoordinateSystem(llaCS2);
     leftLowerArm->setTranslation(leftLowerArmTranslation);
     leftLowerArm->setStartJoint(leftElbow);
 
-    auto leftUpperArm = std::make_shared<::Bone>("leftUpperArm");
+    auto leftUpperArm = std::make_shared<::Bone>("resc28/leftUpperArm");
     leftUpperArm->setSourceCoordinateSystem(luaCS1);
     leftUpperArm->setTargetCoordinateSystem(luaCS2);
     leftUpperArm->setTranslation(leftUpperArmTranslation);

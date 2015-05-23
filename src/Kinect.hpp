@@ -200,13 +200,13 @@ public:
     const std::string & getName() const { return name_; }
 
     RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
-    RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("file:///example.com/kinect/skelTracker/coordinateSystems/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return sourceCoordinateSystem_; }
 
     void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { sourceCoordinateSystem_ = sourceCoordinateSystem; }
 
     RdfStmt($this, "spatial:targetCoordinateSystem", $that)
-    RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("file:///example.com/kinect/skelTracker/coordinateSystems/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return targetCoordinateSystem_; }
 
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { targetCoordinateSystem_ = targetCoordinateSystem; }
