@@ -29,10 +29,16 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::RightHanded
     return _this;
 }
 
-template<>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
+inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Pose &value)
 {
     using namespace Sord;
+    return _this;
+}
+
+inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &value)
+{
+    using namespace Sord;
+     toRDF_impl(ctx, _this, static_cast<const ::Pose &>(value));
     Node _b0 = Node::blank_id(ctx.model.world());
     ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Rotation3D"));
 
@@ -53,12 +59,12 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
     ctx.model.add_statement(_b0, Curie(ctx.model.world(), "maths:w"), Arvida::RDF::toRDF(ctx, value.getW()));
 
     return _this;
-} 
+}
 
-template<>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &value)
+inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation &value)
 {
     using namespace Sord;
+     toRDF_impl(ctx, _this, static_cast<const ::Pose &>(value));
     Node _b0 = Node::blank_id(ctx.model.world());
     ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "spatial:Translation3D"));
 
@@ -131,6 +137,48 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Bone &value
 }
 
 template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Skeleton &value)
+{
+    using namespace Sord;
+    ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "skel:Skeleton"));
+
+    {
+        const auto & _container = value.getBones();
+        for (auto it = std::begin(_container); it != std::end(_container); ++it)
+        {
+            const auto & _that = *it;
+            const std::string path_7 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+            Arvida::RDF::Context ctx_7(ctx, path_7);
+            Sord::URI node_7(ctx.model.world(), path_7);
+            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonBone"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
+        }
+    }
+    {
+        const auto & _container = value.getJoints();
+        for (auto it = std::begin(_container); it != std::end(_container); ++it)
+        {
+            const auto & _that = *it;
+            const std::string path_11 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+            Arvida::RDF::Context ctx_11(ctx, path_11);
+            Sord::URI node_11(ctx.model.world(), path_11);
+            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonJoint"), Arvida::RDF::toRDF(ctx_11, node_11, _that));
+        }
+    }
+    {
+        const auto & _container = value.getRoots();
+        for (auto it = std::begin(_container); it != std::end(_container); ++it)
+        {
+            const auto & _that = *it;
+            const std::string path_15 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+            Arvida::RDF::Context ctx_15(ctx, path_15);
+            Sord::URI node_15(ctx.model.world(), path_15);
+            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonRoot"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
+        }
+    }
+    return _this;
+}
+
+template<>
 inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::CoordinateSystem &value)
 {
     using namespace Sord;
@@ -154,6 +202,15 @@ inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::RightHandedCarte
     if (!triple.is_valid())
         return false;
     const Node _this = triple.subject;
+
+    return true;
+}
+
+template<>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Pose &value)
+{
+    using namespace Sord;
+    Arvida::RDF::Triple triple;
 
     return true;
 }
@@ -307,6 +364,19 @@ inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Bone &value)
     Arvida::RDF::Triple triple;
 
     triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "skel:Bone"));
+    if (!triple.is_valid())
+        return false;
+    const Node _this = triple.subject;
+    return true;
+}
+
+template<>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Skeleton &value)
+{
+    using namespace Sord;
+    Arvida::RDF::Triple triple;
+
+    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "skel:Skeleton"));
     if (!triple.is_valid())
         return false;
     const Node _this = triple.subject;

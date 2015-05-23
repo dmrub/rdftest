@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
 
     std::cout << "Producing " << num << " kinect dataset(s)" << std::endl;
 
-    auto leftElbowRotation = std::make_shared<::Rotation>(1, 2, 3, 4);
-    auto leftLowerArmTranslation = std::make_shared<::Translation>(1, 2, 3);
-    auto leftUpperArmTranslation = std::make_shared<::Translation>(4, 5, 6);
+    auto leftElbowRotation = std::make_shared<::Rotation>("leftElbowRotation", 1, 2, 3, 4);
+    auto leftLowerArmTranslation = std::make_shared<::Translation>("leftLowerArmTranslation", 1, 2, 3);
+    auto leftUpperArmTranslation = std::make_shared<::Translation>("leftUpperArmTranslation", 4, 5, 6);
 
     auto llaCS1 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS1");
     auto llaCS2 = std::make_shared<::RightHandedCartesianCoordinateSystem3D>("llaCS2");
@@ -66,18 +66,18 @@ int main(int argc, char *argv[])
     coordinateSystems.push_back(luaCS1);
     coordinateSystems.push_back(luaCS2);
 
-    auto leftElbow = std::make_shared<::Joint>();
+    auto leftElbow = std::make_shared<::Joint>("leftElbow");
     leftElbow->setTargetCoordinateSystem(llaCS1);
     leftElbow->setSourceCoordinateSystem(luaCS2);
     leftElbow->setRotation(leftElbowRotation);
 
-    auto leftLowerArm = std::make_shared<::Bone>();
+    auto leftLowerArm = std::make_shared<::Bone>("leftLowerArm");
     leftLowerArm->setSourceCoordinateSystem(llaCS1);
     leftLowerArm->setTargetCoordinateSystem(llaCS2);
     leftLowerArm->setTranslation(leftLowerArmTranslation);
     leftLowerArm->setStartJoint(leftElbow);
 
-    auto leftUpperArm = std::make_shared<::Bone>();
+    auto leftUpperArm = std::make_shared<::Bone>("leftUpperArm");
     leftUpperArm->setSourceCoordinateSystem(luaCS1);
     leftUpperArm->setTargetCoordinateSystem(luaCS2);
     leftUpperArm->setTranslation(leftUpperArmTranslation);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     poses.push_back(leftLowerArmTranslation);
     poses.push_back(leftUpperArmTranslation);
 
-    auto resc28 = std::make_shared<::Skeleton>();
+    auto resc28 = std::make_shared<::Skeleton>("resc28");
     std::vector< std::shared_ptr<Bone> > bones;
     bones.push_back(leftLowerArm);
     bones.push_back(leftUpperArm);
@@ -122,7 +122,8 @@ int main(int argc, char *argv[])
         Arvida::RDF::Context ctx(model, url);
         URI kinect_node(world, url);
 
-        Arvida::RDF::toRDF(ctx, kinect_node, *leftElbow);
+        //Arvida::RDF::toRDF(ctx, kinect_node, *leftElbow);
+        Arvida::RDF::toRDF(ctx, kinect_node, resc28);
     }
 
     std::cout << "Writing poses to kinect_sordmm.ttl" << std::endl;

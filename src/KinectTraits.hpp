@@ -87,6 +87,60 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Joint &value)
     return toRDF(ctx, _this, static_cast<const ::Segment &>(value));
 }
 
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Bone &value)
+{
+    return toRDF(ctx, _this, static_cast<const ::Segment &>(value));
+}
+
+class PoseVisitor : public Visitor<const Pose, NodeRef, const Context &, NodeRef>
+{
+public:
+    META_Visitor(PoseVisitor, toRDF)
+
+PoseVisitor()
+    {
+        // Set visitables classes (no need to specify base class)
+        META_Visitables(Translation, Rotation);
+    }
+
+protected:
+    NodeRef toRDF(const ::Pose & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+    NodeRef toRDF(const ::Translation & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+    NodeRef toRDF(const ::Rotation & cs, const Context &ctx, NodeRef _this)
+    {
+        return toRDF_impl(ctx, _this, cs);
+    }
+
+};
+
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
+{
+    PoseVisitor v;
+    return v(value, ctx, _this);
+}
+
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &value)
+{
+    return toRDF(ctx, _this, static_cast<const ::Pose &>(value));
+}
+
+template <>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
+{
+    return toRDF(ctx, _this, static_cast<const ::Pose &>(value));
+}
+
 }
 }
 

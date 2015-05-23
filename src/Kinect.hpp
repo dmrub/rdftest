@@ -52,10 +52,22 @@ private:
 
 class
 
-Pose
+RdfUseVisitor()
+
+Pose: public Visitable<Pose>
 {
 public:
+    META_BaseVisitable(Pose)
+public:
+
+    Pose(const std::string &name) : name_(name) { }
+
+    const std::string & getName() const { return name_; }
+
     virtual ~Pose() { }
+
+private:
+    std::string name_;
 };
 
 // Rotation
@@ -72,16 +84,21 @@ Rotation: public Pose
 {
 public:
 
-    Rotation()
-        : rotation_{0.0f, 0.0f, 0.0f, 0.0f}
+    META_Visitable(Rotation, Pose)
+
+    Rotation(const std::string &name)
+        : Pose(name)
+        , rotation_{0.0f, 0.0f, 0.0f, 0.0f}
     { }
 
-    Rotation(float x, float y, float z, float w)
-        : rotation_{x, y, z, w}
+    Rotation(const std::string &name, float x, float y, float z, float w)
+        : Pose(name)
+        , rotation_{x, y, z, w}
     { }
 
     Rotation(const Rotation &other)
-        : rotation_{other.rotation_[0], other.rotation_[1], other.rotation_[2], other.rotation_[3]}
+        : Pose(other.getName())
+        , rotation_{other.rotation_[0], other.rotation_[1], other.rotation_[2], other.rotation_[3]}
     { }
 
     RdfStmt(_:2, "maths:x", $that)
@@ -125,16 +142,21 @@ Translation: public Pose
 {
 public:
 
-    Translation()
-        : translation_{0.0f, 0.0f, 0.0f}
+    META_Visitable(Translation, Pose)
+
+    Translation(const std::string &name)
+        : Pose(name)
+        , translation_{0.0f, 0.0f, 0.0f}
     { }
 
-    Translation(float x, float y, float z)
-        : translation_{x, y, z}
+    Translation(const std::string &name, float x, float y, float z)
+        : Pose(name)
+        , translation_{x, y, z}
     { }
 
     Translation(const Translation &other)
-        : translation_{other.translation_[0], other.translation_[1], other.translation_[2]}
+        : Pose(other.getName())
+        , translation_{other.translation_[0], other.translation_[1], other.translation_[2]}
     { }
 
     RdfStmt(_:2, "maths:x", $that)
@@ -171,35 +193,40 @@ public:
     META_BaseVisitable(Segment)
 public:
 
+    Segment(const std::string &name) : name_(name) { }
+
     virtual ~Segment() { }
+
+    const std::string & getName() const { return name_; }
 
     RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
     RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
-    const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return _sourceCoordinateSystem; }
+    const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return sourceCoordinateSystem_; }
 
-    void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { _sourceCoordinateSystem = sourceCoordinateSystem; }
+    void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { sourceCoordinateSystem_ = sourceCoordinateSystem; }
 
     RdfStmt($this, "spatial:targetCoordinateSystem", $that)
     RdfPath("kinect/skelTracker/coordinateSystems/resc28/{$that ? $that->getName() : \"\"}")
-    const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return _targetCoordinateSystem; }
+    const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return targetCoordinateSystem_; }
 
-    void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { _targetCoordinateSystem = targetCoordinateSystem; }
+    void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { targetCoordinateSystem_ = targetCoordinateSystem; }
 
     RdfStmt($this, "spatial:translation", $that)
-    const std::shared_ptr< Translation > & getTranslation() const { return _translation; }
+    const std::shared_ptr< Translation > & getTranslation() const { return translation_; }
 
-    void setTranslation(const std::shared_ptr< Translation > & translation) { _translation = translation; }
+    void setTranslation(const std::shared_ptr< Translation > & translation) { translation_ = translation; }
 
     RdfStmt($this, "spatial:rotation", $that)
-    const std::shared_ptr< Rotation > & getRotation() const { return _rotation; }
+    const std::shared_ptr< Rotation > & getRotation() const { return rotation_; }
 
-    void setRotation(const std::shared_ptr< Rotation > & rotation) { _rotation = rotation; }
+    void setRotation(const std::shared_ptr< Rotation > & rotation) { rotation_ = rotation; }
 
 private:
-    std::shared_ptr< CoordinateSystem > _sourceCoordinateSystem;
-    std::shared_ptr< CoordinateSystem > _targetCoordinateSystem;
-    std::shared_ptr< Translation > _translation;
-    std::shared_ptr< Rotation > _rotation;
+    std::shared_ptr< CoordinateSystem > sourceCoordinateSystem_;
+    std::shared_ptr< CoordinateSystem > targetCoordinateSystem_;
+    std::shared_ptr< Translation > translation_;
+    std::shared_ptr< Rotation > rotation_;
+    std::string name_;
 };
 
 // Joint
@@ -213,7 +240,7 @@ Joint: public Segment
 public:
     META_Visitable(Joint, Segment)
 public:
-    Joint() { }
+    Joint(const std::string &name) : Segment(name) { }
 };
 
 // Bone
@@ -228,62 +255,79 @@ public:
     META_Visitable(Joint, Segment)
 public:
 
-    Bone()
-        : _startJoint()
-        , _endJoint()
+    Bone(const std::string &name)
+        : Segment(name)
+        , startJoint_()
+        , endJoint_()
     { }
 
     RdfStmt($this, "skel:startJoint", $that)
-    const std::shared_ptr< Joint > & getStartJoint() const { return _startJoint; }
+    const std::shared_ptr< Joint > & getStartJoint() const { return startJoint_; }
 
-    void setStartJoint(const std::shared_ptr< Joint > & startJoint) { _startJoint = startJoint; }
+    void setStartJoint(const std::shared_ptr< Joint > & startJoint) { startJoint_ = startJoint; }
 
     RdfStmt($this, "skel:endJoint", $that)
-    const std::shared_ptr< Joint > & getEndJoint() const { return _endJoint; }
+    const std::shared_ptr< Joint > & getEndJoint() const { return endJoint_; }
 
-    void setEndJoint(const std::shared_ptr< Joint > & endJoint) { _endJoint = endJoint; }
+    void setEndJoint(const std::shared_ptr< Joint > & endJoint) { endJoint_ = endJoint; }
 
 private:
-    std::shared_ptr< Joint > _startJoint;
-    std::shared_ptr< Joint > _endJoint;
+    std::shared_ptr< Joint > startJoint_;
+    std::shared_ptr< Joint > endJoint_;
 };
-
 
 // Skeleton
 
-class Skeleton
+class
+
+RdfStmt($this, "rdf:type", "skel:Skeleton")
+
+Skeleton
 {
 public:
 
-    const std::vector< std::shared_ptr<Bone> > & getBones() const { return _bones; }
+    Skeleton(const std::string &name) : name_(name) { }
+
+    const std::string & getName() const { return name_; }
+
+    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfStmt($this, "skel:skeletonBone", $that.foreach)
+    const std::vector< std::shared_ptr<Bone> > & getBones() const { return bones_; }
+
     void setBones(const std::vector< std::shared_ptr<Bone> > & bones)
     {
-        _bones = bones;
+        bones_ = bones;
     }
 
     void setBones(std::vector< std::shared_ptr<Bone> > && bones)
     {
-        _bones = std::move(bones);
+        bones_ = std::move(bones);
     }
 
-    const std::vector< std::shared_ptr<Joint> > & getJoints() const { return _joints; }
+    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfStmt($this, "skel:skeletonJoint", $that.foreach)
+    const std::vector< std::shared_ptr<Joint> > & getJoints() const { return joints_; }
+
     void setJoints(const std::vector< std::shared_ptr<Joint> > & joints)
     {
-        _joints = joints;
+        joints_ = joints;
     }
 
     void setJoints(std::vector< std::shared_ptr<Joint> > && joints)
     {
-        _joints = std::move(joints);
+        joints_ = std::move(joints);
     }
 
-    const std::vector< std::shared_ptr<Segment> > & getRoots() { return _roots; }
-    void setRoots(const std::vector< std::shared_ptr<Segment> > &roots) { _roots = roots; }
+    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfStmt($this, "skel:skeletonRoot", $that.foreach)
+    const std::vector< std::shared_ptr<Segment> > & getRoots() const { return roots_; }
+    void setRoots(const std::vector< std::shared_ptr<Segment> > &roots) { roots_ = roots; }
 
 private:
-    std::vector< std::shared_ptr<Bone> > _bones;
-    std::vector< std::shared_ptr<Joint> > _joints;
-    std::vector< std::shared_ptr<Segment> > _roots;
+    std::string name_;
+    std::vector< std::shared_ptr<Bone> > bones_;
+    std::vector< std::shared_ptr<Joint> > joints_;
+    std::vector< std::shared_ptr<Segment> > roots_;
 };
 
 // SkeletonTrackingService
