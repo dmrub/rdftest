@@ -4,6 +4,7 @@
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
 #include <memory>
+#include <vector>
 
 namespace Arvida {
 namespace RDF {
@@ -16,10 +17,11 @@ struct Context
 {
     Sord::Model &model;
     const std::string &path;
+    const void *user_data;
 
-    Context(Sord::Model &model, const std::string &path) : model(model), path(path) { }
-    Context(const Context &ctx) : model(ctx.model), path(ctx.path) { }
-    Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path) { }
+    Context(Sord::Model &model, const std::string &path, const void *user_data = 0) : model(model), path(path), user_data(user_data) { }
+    Context(const Context &ctx) : model(ctx.model), path(ctx.path), user_data(ctx.user_data) { }
+    Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path), user_data(ctx.user_data) { }
 };
 
 struct Triple
@@ -99,6 +101,20 @@ inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::shared_ptr
             thisNode = Sord::Node::blank_id(ctx.model.world());
         return thisNode;
     }
+}
+
+template < class T >
+inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::vector<T> &value)
+{
+    using namespace Sord;
+    ctx.model.add_statement(thisNode, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "core:Container"));
+
+    for (auto it = std::begin(value); it != std::end(value); ++it)
+    {
+        const auto & _that = *it;
+        ctx.model.add_statement(thisNode, Curie(ctx.model.world(), "core:member"), Arvida::RDF::toRDF(ctx, _that));
+    }
+    return thisNode;
 }
 
 template<>

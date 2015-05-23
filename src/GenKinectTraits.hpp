@@ -3,6 +3,7 @@
 
 #include "Kinect.hpp"
 #include "RDFTraits.hpp"
+#include "KinectUtils.hpp"
 
 // Module name: CodegenExample
 
@@ -88,14 +89,14 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Segment &va
     using namespace Sord;
     {
         const auto & _that = value.getSourceCoordinateSystem();
-        const std::string path_3 = "file:///example.com/kinect/skelTracker/coordinateSystems/" + (_that ? _that->getName() : "");
+        const std::string path_3 = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
         Arvida::RDF::Context ctx_3(ctx, path_3);
         Sord::URI node_3(ctx.model.world(), path_3);
         ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), Arvida::RDF::toRDF(ctx_3, node_3, _that));
     }
     {
         const auto & _that = value.getTargetCoordinateSystem();
-        const std::string path_7 = "file:///example.com/kinect/skelTracker/coordinateSystems/" + (_that ? _that->getName() : "");
+        const std::string path_7 = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
         Arvida::RDF::Context ctx_7(ctx, path_7);
         Sord::URI node_7(ctx.model.world(), path_7);
         ctx.model.add_statement(_this, Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
@@ -147,7 +148,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Skeleton &value)
         for (auto it = std::begin(_container); it != std::end(_container); ++it)
         {
             const auto & _that = *it;
-            const std::string path_7 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+        const std::string path_7 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
             Arvida::RDF::Context ctx_7(ctx, path_7);
             Sord::URI node_7(ctx.model.world(), path_7);
             ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonBone"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
@@ -158,7 +159,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Skeleton &value)
         for (auto it = std::begin(_container); it != std::end(_container); ++it)
         {
             const auto & _that = *it;
-            const std::string path_11 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+        const std::string path_11 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
             Arvida::RDF::Context ctx_11(ctx, path_11);
             Sord::URI node_11(ctx.model.world(), path_11);
             ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonJoint"), Arvida::RDF::toRDF(ctx_11, node_11, _that));
@@ -169,11 +170,64 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Skeleton &value)
         for (auto it = std::begin(_container); it != std::end(_container); ++it)
         {
             const auto & _that = *it;
-            const std::string path_15 = ctx.path + "kinect/skelTracker/segments/" + (_that ? _that->getName() : "");
+        const std::string path_15 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
             Arvida::RDF::Context ctx_15(ctx, path_15);
             Sord::URI node_15(ctx.model.world(), path_15);
             ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonRoot"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
         }
+    }
+    return _this;
+}
+
+template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
+{
+    using namespace Sord;
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "service:SkeletonTrackingService"));
+
+    {
+        const auto & _that = value.getCoordinateSystems();
+        const std::string path_7 = ctx.path + "/coordinateSystems/";
+        Arvida::RDF::Context ctx_7(ctx, path_7);
+        Sord::URI node_7(ctx.model.world(), path_7);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerCoordinateSystems"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
+    }
+    {
+        const auto & _that = value.getPoses();
+        const std::string path_11 = ctx.path + "/poses/";
+        Arvida::RDF::Context ctx_11(ctx, path_11);
+        Sord::URI node_11(ctx.model.world(), path_11);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerPoses"), Arvida::RDF::toRDF(ctx_11, node_11, _that));
+    }
+    {
+        const auto & _that = value.getSegments();
+        const std::string path_15 = ctx.path + "/segments/";
+        Arvida::RDF::Context ctx_15(ctx, path_15);
+        Sord::URI node_15(ctx.model.world(), path_15);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerSegments"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
+    }
+    {
+        const auto & _that = value.getSkeletons();
+        const std::string path_19 = ctx.path + "/skeletons/";
+        Arvida::RDF::Context ctx_19(ctx, path_19);
+        Sord::URI node_19(ctx.model.world(), path_19);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerSkeletons"), Arvida::RDF::toRDF(ctx_19, node_19, _that));
+    }
+    return _this;
+}
+
+template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::TrackingServiceProvider &value)
+{
+    using namespace Sord;
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "core:TrackingServiceProvider"));
+
+    {
+        const auto & _that = value.getSkeletonTracker();
+        const std::string path_7 = ctx.path + "/skelTracker";
+        Arvida::RDF::Context ctx_7(ctx, path_7);
+        Sord::URI node_7(ctx.model.world(), path_7);
+        ctx.model.add_statement(_this, Curie(ctx.model.world(), "core:service"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
     }
     return _this;
 }
@@ -377,6 +431,31 @@ inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::Skeleton &value)
     Arvida::RDF::Triple triple;
 
     triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "skel:Skeleton"));
+    if (!triple.is_valid())
+        return false;
+    const Node _this = triple.subject;
+    return true;
+}
+
+template<>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::SkeletonTrackingService &value)
+{
+    using namespace Sord;
+    Arvida::RDF::Triple triple;
+
+    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "service:SkeletonTrackingService"));
+    if (!triple.is_valid())
+        return false;
+    const Node _this = triple.subject;
+    return true;
+}
+
+template<>
+inline bool fromRDF(const Context &ctx, const NodeRef _this0, ::TrackingServiceProvider &value)
+{
+    using namespace Sord;
+    Arvida::RDF::Triple triple;
+    triple = Arvida::RDF::find_triple(ctx.model, _this0, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "core:TrackingServiceProvider"));
     if (!triple.is_valid())
         return false;
     const Node _this = triple.subject;

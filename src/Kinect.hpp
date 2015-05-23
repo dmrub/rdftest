@@ -9,6 +9,15 @@
 #include "visitor/Visitor.hpp"
 #include "visitor/Visitable.hpp"
 
+arvida_global_annotation(
+    arvida_include("KinectUtils.hpp"),
+    arvida_prolog("#ifndef KINECT_TRAITS"),
+    arvida_prolog("#define KINECT_TRAITS"),
+    arvida_prolog(""),
+    arvida_epilog(""),
+    arvida_epilog("#endif")
+)
+
 // CoordinateSystem
 
 class
@@ -200,13 +209,13 @@ public:
     const std::string & getName() const { return name_; }
 
     RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
-    RdfAbsolutePath("file:///example.com/kinect/skelTracker/coordinateSystems/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_coordinate_systems_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return sourceCoordinateSystem_; }
 
     void setSourceCoordinateSystem(const std::shared_ptr< CoordinateSystem > & sourceCoordinateSystem) { sourceCoordinateSystem_ = sourceCoordinateSystem; }
 
     RdfStmt($this, "spatial:targetCoordinateSystem", $that)
-    RdfAbsolutePath("file:///example.com/kinect/skelTracker/coordinateSystems/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_coordinate_systems_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getTargetCoordinateSystem() const { return targetCoordinateSystem_; }
 
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { targetCoordinateSystem_ = targetCoordinateSystem; }
@@ -290,7 +299,7 @@ public:
 
     const std::string & getName() const { return name_; }
 
-    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonBone", $that.foreach)
     const std::vector< std::shared_ptr<Bone> > & getBones() const { return bones_; }
 
@@ -304,7 +313,7 @@ public:
         bones_ = std::move(bones);
     }
 
-    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonJoint", $that.foreach)
     const std::vector< std::shared_ptr<Joint> > & getJoints() const { return joints_; }
 
@@ -318,7 +327,7 @@ public:
         joints_ = std::move(joints);
     }
 
-    RdfPath("kinect/skelTracker/segments/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonRoot", $that.foreach)
     const std::vector< std::shared_ptr<Segment> > & getRoots() const { return roots_; }
     void setRoots(const std::vector< std::shared_ptr<Segment> > &roots) { roots_ = roots; }
@@ -332,7 +341,11 @@ private:
 
 // SkeletonTrackingService
 
-class SkeletonTrackingService
+class
+
+RdfStmt($this, "rdf:type", "service:SkeletonTrackingService")
+
+SkeletonTrackingService
 {
 public:
 
@@ -343,6 +356,8 @@ public:
         , skeletons_()
     { }
 
+    RdfPath("/coordinateSystems/")
+    RdfStmt($this, "service:trackerCoordinateSystems", $that)
     const std::vector< std::shared_ptr<CoordinateSystem> > & getCoordinateSystems() const
     {
         return coordinateSystems_;
@@ -358,6 +373,8 @@ public:
         coordinateSystems_ = std::move(coordinateSystems);
     }
 
+    RdfPath("/poses/")
+    RdfStmt($this, "service:trackerPoses", $that)
     const std::vector< std::shared_ptr<Pose> > & getPoses() const
     {
         return poses_;
@@ -373,6 +390,8 @@ public:
         poses_ = std::move(poses);
     }
 
+    RdfPath("/segments/")
+    RdfStmt($this, "service:trackerSegments", $that)
     const std::vector< std::shared_ptr<Segment> > & getSegments() const
     {
         return segments_;
@@ -388,7 +407,8 @@ public:
         segments_ = std::move(segments);
     }
 
-
+    RdfPath("/skeletons/")
+    RdfStmt($this, "service:trackerSkeletons", $that)
     const std::vector< std::shared_ptr<Skeleton> > & getSkeletons() const
     {
         return skeletons_;
@@ -411,10 +431,14 @@ private:
     std::vector< std::shared_ptr<Skeleton> > skeletons_;
 };
 
-class TrackingServiceProvider
+class
+RdfStmt($this, "rdf:type", "core:TrackingServiceProvider")
+TrackingServiceProvider
 {
 public:
 
+    RdfPath("/skelTracker")
+    RdfStmt($this, "core:service", $that)
     const SkeletonTrackingService & getSkeletonTracker() const { return skeletonTracker_; }
 
     SkeletonTrackingService & getSkeletonTracker() { return skeletonTracker_; }

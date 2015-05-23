@@ -53,48 +53,29 @@ extern "C"
 void * arvida_reflect_get_type_ptr(unsigned long);
 void   arvida_reflect_object(unsigned long);
 void   arvida_reflect_object_ext(unsigned long, ...);
+void   arvida_global_annotation_func(const char *str, ...);
 
 #ifdef __cplusplus
 }
 #endif
 
 
-#define arvida_get_reflected_type(T, R)  \
+#define arvida_get_reflected_type(T, R)                     \
     (R*)arvida_reflect_get_type_ptr(sizeof(T))
 
-#define arvida_reflect_object(T)                \
+#define arvida_reflect_object(T)                            \
     arvida_reflect_object(sizeof(T))
 
-#define arvida_reflect_object_ext(T, ...)                \
+#define arvida_reflect_object_ext(T, ...)                   \
     arvida_reflect_object_ext(sizeof(T), __VA_ARGS__)
 
-#define arvida_reflect_type(T)                        \
-    struct                                           \
-    __attribute__((type_tag_for_datatype(arvida, T))) \
-    ARVIDA_UNIQUE(arvida_reflect) { };
-
 #else
 
+#define arvida_get_reflected_type(T, R)
 #define arvida_reflect_object(T)
-#define arvida_reflect_type(T)
+#define arvida_reflect_object_ext(T, ...)
 
-#endif
-
-#endif
-
-typedef struct ArvidaType ArvidaType;
-
-#ifdef __arvida_parse__
-#define arvida_type(T) arvida_get_reflected_type(T, ArvidaType)
-#else
-#define arvida_type(T) (ArvidaType*)NULL
-#endif
-
-#ifdef __arvida_parse__
-#define arvida_declare_type(T) arvida_reflect_type(T)
-#else
-#define arvida_declare_type(T)
-#endif
+#endif /* __arvida_parse__ */
 
 #ifdef __arvida_parse__
 
@@ -120,46 +101,50 @@ typedef struct ArvidaType ArvidaType;
 
 #define HIDDEN __attribute__((annotate("hidden")))
 
-#define result_value __attribute__((annotate("arvida-result")))
-
 #define _arvida_decls(decls) static void ARVIDA_UNIQUE(arvida_reg)(void) { decls }
 #define arvida_declare_object(T) _arvida_decls( arvida_reflect_object(T); )
 #define arvida_declare_opaque_object(T, ...) _arvida_decls( arvida_reflect_object_ext(T, "arvida-opaque-object", "arvida-eop", __VA_ARGS__); )
-#define arvida_declare_struct(T, ...) _arvida_decls( arvida_reflect_object_ext(T, __VA_ARGS__); )
-#define arvida_declare_struct_with_api(T, ...) _arvida_decls( arvida_reflect_object_ext(T, __VA_ARGS__); )
-#define arvida_user_api(api_name, func) "arvida-user-api", #api_name, sizeof(func), "arvida-eop"
-#define arvida_struct_array_member(ptr_member_name, size_member_name) \
-    "arvida-struct-array-member", #ptr_member_name, #size_member_name, "arvida-eop"
 
 #define arvida_annotate_object(T, ...) _arvida_decls( arvida_reflect_object_ext(T, __VA_ARGS__); )
+#define arvida_global_annotation(...) _arvida_decls( arvida_global_annotation_func("", __VA_ARGS__); )
 
-#define arvida_class_stmt(a, b, c) \
+#define arvida_include(include) \
+        "arvida-include", ARVIDA_STRINGIZE(include), "arvida-eop"
+
+#define arvida_prolog(prolog) \
+        "arvida-prolog", ARVIDA_STRINGIZE(prolog), "arvida-eop"
+
+#define arvida_epilog(epilog) \
+        "arvida-epilog", ARVIDA_STRINGIZE(epilog), "arvida-eop"
+
+#define arvida_class_stmt(a, b, c)                                                  \
         "arvida-class-stmt", ARVIDA_STRINGIZE(a), ARVIDA_STRINGIZE(b), ARVIDA_STRINGIZE(c), "arvida-eop"
 
-#define arvida_member_stmt(member_name, a, b, c)                           \
+#define arvida_member_stmt(member_name, a, b, c)                                    \
         "arvida-member-stmt", #member_name, ARVIDA_STRINGIZE(a), ARVIDA_STRINGIZE(b), ARVIDA_STRINGIZE(c), "arvida-eop"
 
-#define arvida_member_path(member_name, path)                           \
+#define arvida_member_path(member_name, path)                                       \
         "arvida-member-path", #member_name, path, "arvida-eop"
 
-#define arvida_member_absolute_path(member_name, path)                           \
+#define arvida_member_absolute_path(member_name, path)                              \
         "arvida-member-absolute-path", #member_name, path, "arvida-eop"
 
-#define arvida_class_use_visitor() \
+#define arvida_class_use_visitor()                                                  \
         "arvida-class-use-visitor", "arvida-eop"
 
-#define arvida_class_include(include) \
+#define arvida_class_include(include)                                               \
         "arvida-class-include", ARVIDA_STRINGIZE(include), "arvida-eop"
 
-#define arvida_object_semantic(semantic_value) \
+#define arvida_object_semantic(semantic_value)                                      \
             "arvida-object-semantic", semantic_value, "arvida-eop"
-#define arvida_field_semantic(field_name, semantic_value) \
+
+#define arvida_field_semantic(field_name, semantic_value)                           \
             "arvida-field-semantic", #field_name, semantic_value, "arvida-eop"
 
-#define arvida_member_semantic(member_name, semantic_value) \
+#define arvida_member_semantic(member_name, semantic_value)                         \
             "arvida-member-semantic", #member_name, semantic_value, "arvida-eop"
 
-#define arvida_annotate_member(member_name, annotation_name, annotation_value) \
+#define arvida_annotate_member(member_name, annotation_name, annotation_value)      \
             "arvida-annotate-member", #member_name, #annotation_name, annotation_value, "arvida-eop"
 
 #else
@@ -182,10 +167,11 @@ typedef struct ArvidaType ArvidaType;
 #define _arvida_decls(decls)
 #define arvida_declare_object(T)
 #define arvida_declare_opaque_object(T, ...)
-#define arvida_declare_struct(T, ...)
-#define arvida_declare_struct_with_api(T, ...)
-#define arvida_user_api(api_name, func)
-#define arvida_struct_array_member(ptr_type_name, ptr_member_name, size_type_name, size_member_name)
+
+#define arvida_global_annotation(...)
+#define arvida_include(include)
+#define arvida_prolog(prolog)
+#define arvida_epilog(epilog)
 
 #define arvida_annotate_object(T, ...)
 #define arvida_class_stmt(a, b, c)
@@ -205,3 +191,5 @@ typedef struct ArvidaType ArvidaType;
 #define rdf_class_stmt(a, b, c) arvida_class_stmt(a, b, c)
 #define rdf_member_stmt(member_name, a, b, c) arvida_member_stmt(member_name, a, b, c)
 #define rdf_member_path(member_name, path) arvida_member_path(member_name, path)
+
+#endif

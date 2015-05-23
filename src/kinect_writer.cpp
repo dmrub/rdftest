@@ -25,6 +25,8 @@
 #define MEA(x) "http://vocab.arvida.de/2014/03/mea/vocab#" x
 #define XSD(x) "http://www.w3.org/2001/XMLSchema#" x
 #define SKEL(x) "http://vocab.arvida.de/2015/05/skel/vocab#" x
+#define SERVICE(x) "http://vocab.arvida.de/2015/05/skelTracker/vocab#" x
+#define CORE(x) "http://vocab.arvida.de/2014/02/core/vocab#" x
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +48,8 @@ int main(int argc, char *argv[])
     world.add_prefix("mea", MEA(""));
     world.add_prefix("xsd", XSD(""));
     world.add_prefix("skel", SKEL(""));
+    world.add_prefix("service", SERVICE(""));
+    world.add_prefix("core", CORE(""));
 
     Model model(world, "file:///example.com/");
 
@@ -117,13 +121,15 @@ int main(int argc, char *argv[])
     kinect.getSkeletonTracker().setSegments(std::move(segments));
     kinect.getSkeletonTracker().setSkeletons(std::move(skeletons));
 
+    PathManager pm("file:///example.com");
+
     {
-        const std::string url = "file:///example.com/";
-        Arvida::RDF::Context ctx(model, url);
-        URI kinect_node(world, url);
+        Arvida::RDF::Context ctx(model, pm.base_path, &pm);
+        URI kinect_node(world, pm.base_path);
 
         //Arvida::RDF::toRDF(ctx, kinect_node, *leftElbow);
-        Arvida::RDF::toRDF(ctx, kinect_node, resc28);
+        //Arvida::RDF::toRDF(ctx, kinect_node, resc28);
+        Arvida::RDF::toRDF(ctx, kinect_node, kinect);
     }
 
     std::cout << "Writing poses to kinect_sordmm.ttl" << std::endl;
