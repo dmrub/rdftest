@@ -10,6 +10,7 @@
 #include "visitor/Visitable.hpp"
 
 arvida_global_annotation(
+    arvida_include("Kinect.hpp"),
     arvida_include("KinectUtils.hpp"),
     arvida_prolog("#ifndef KINECT_TRAITS"),
     arvida_prolog("#define KINECT_TRAITS"),
@@ -358,6 +359,8 @@ public:
 
     RdfPath("/coordinateSystems/")
     RdfStmt($this, "service:trackerCoordinateSystems", $that)
+    RdfStmt($that, "rdf:type", "core:Container")
+    RdfStmt($that, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<CoordinateSystem> > & getCoordinateSystems() const
     {
         return coordinateSystems_;
