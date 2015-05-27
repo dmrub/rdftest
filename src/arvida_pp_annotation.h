@@ -88,6 +88,8 @@ void   arvida_global_annotation_func(const char *str, ...);
 
 #define RdfPath(path)  ArvidaMemberAnnotationBegin("path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
 #define RdfAbsolutePath(path)  ArvidaMemberAnnotationBegin("absolute-path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
+#define RdfElementPath(path)  ArvidaMemberAnnotationBegin("element-path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
+#define RdfAbsoluteElementPath(path)  ArvidaMemberAnnotationBegin("absolute-element-path") ArvidaMemberAnnotation(path) ArvidaMemberAnnotationEnd()
 #define RdfUseVisitor() ArvidaMemberAnnotationBegin("use-visitor") ArvidaMemberAnnotationEnd()
 #define RdfInclude(include) ArvidaMemberAnnotationBegin("include") ArvidaMemberAnnotation(include) ArvidaMemberAnnotationEnd()
 
@@ -129,6 +131,12 @@ void   arvida_global_annotation_func(const char *str, ...);
 #define arvida_member_absolute_path(member_name, path)                              \
         "arvida-member-absolute-path", #member_name, path, "arvida-eop"
 
+#define arvida_member_element_path(member_name, path)                                       \
+        "arvida-member-element-path", #member_name, path, "arvida-eop"
+
+#define arvida_member_absolute_element_path(member_name, path)                              \
+        "arvida-member-absolute-element-path", #member_name, path, "arvida-eop"
+
 #define arvida_class_use_visitor()                                                  \
         "arvida-class-use-visitor", "arvida-eop"
 
@@ -160,6 +168,8 @@ void   arvida_global_annotation_func(const char *str, ...);
 
 #define RdfPath(path)
 #define RdfAbsolutePath(path)
+#define RdfElementPath(path)
+#define RdfAbsoluteElementPath(path)
 #define RdfUseVisitor()
 #define RdfInclude(include)
 #define RdfStmt(a, b, c)
@@ -180,6 +190,8 @@ void   arvida_global_annotation_func(const char *str, ...);
 #define arvida_member_stmt(member_name, a, b, c)
 #define arvida_member_path(member_name, path)
 #define arvida_member_absolute_path(member_name, path)
+#define arvida_member_element_path(member_name, path)
+#define arvida_member_absolute_element_path(member_name, path)
 
 #define arvida_field_semantic(field_name, semantic_value)
 #define arvida_member_semantic(member_name, semantic_value)

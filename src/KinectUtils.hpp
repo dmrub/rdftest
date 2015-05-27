@@ -30,5 +30,9 @@ std::string get_coordinate_systems_path(const Arvida::RDF::Context &ctx)
     return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/kinect/skelTracker/coordinateSystems";
 }
 
+std::string get_poses_path(const Arvida::RDF::Context &ctx)
+{
+    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/kinect/skelTracker/poses";
+}
 
 #endif /* KINECTUTILS_HPP_INCLUDED */

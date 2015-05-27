@@ -13,16 +13,20 @@ namespace RDF
 
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::CoordinateSystem &value)
 {
+     {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:CoordinateSystem"));
 
+     }
     return _this;
 }
 
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::RightHandedCartesianCoordinateSystem3D &value)
 {
     toRDF_impl(ctx, _this, static_cast<const ::CoordinateSystem &>(value));
+     {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:RightHandedCartesianCoordinateSystem3D"));
 
+     }
     return _this;
 }
 
@@ -35,6 +39,7 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
 {
      toRDF_impl(ctx, _this, static_cast<const ::Pose &>(value));
     Node _b0 = Node::blank_id(ctx.model.world());
+     {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:Rotation3D"));
 
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityValue"), _b0);
@@ -45,13 +50,76 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
 
     ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Quaternion"));
 
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), Arvida::RDF::toRDF(ctx, value.getX()));
 
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
+     }
+     // Serialize member getX
+     {
+         const auto & _that = value.getX();
+         if (Arvida::RDF::isValidValue(_that))
+         {
 
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
 
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:w"), Arvida::RDF::toRDF(ctx, value.getW()));
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), that_node);
+
+
+     }
+     }
+     // Serialize member getY
+     {
+         const auto & _that = value.getY();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), that_node);
+
+
+     }
+     }
+     // Serialize member getZ
+     {
+         const auto & _that = value.getZ();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), that_node);
+
+
+     }
+     }
+     // Serialize member getW
+     {
+         const auto & _that = value.getW();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:w"), that_node);
+
+
+     }
+     }
 
     return _this;
 }
@@ -61,23 +129,56 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
      toRDF_impl(ctx, _this, static_cast<const ::Pose &>(value));
     Node _b0 = Node::blank_id(ctx.model.world());
     {
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:Translation3D"));
-
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityValue"), _b0);
-
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityKind"), Sord::Curie(ctx.model.world(), "vom:Length"));
-
-        ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Vector3D"));
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:Translation3D"));
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityValue"), _b0);
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityKind"), Sord::Curie(ctx.model.world(), "vom:Length"));
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Vector3D"));
     }
+     // Serialize member getX
     {
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), Arvida::RDF::toRDF(ctx, value.getX()));
+         const auto & _that = value.getX();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), that_node);
+         }
     }
+     // Serialize member getY
     {
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), Arvida::RDF::toRDF(ctx, value.getY()));
+         const auto & _that = value.getY();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), that_node);
+         }
     }
+     // Serialize member getZ
     {
-    ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), Arvida::RDF::toRDF(ctx, value.getZ()));
+         const auto & _that = value.getZ();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), that_node);
     }
+     }
     return _this;
 }
 
@@ -86,28 +187,62 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Segment &va
     // Serialize member getSourceCoordinateSystem
     {
         const auto & _that = value.getSourceCoordinateSystem();
-        const std::string path_3 = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
-        Arvida::RDF::Context ctx_3(ctx, path_3);
-        Sord::URI node_3(ctx.model.world(), path_3);
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), Arvida::RDF::toRDF(ctx_3, node_3, _that));
+         if (Arvida::RDF::isValidValue(_that))
+         {
+         const std::string that_path = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), that_node);
+         }
     }
+     // Serialize member getTargetCoordinateSystem
     {
         const auto & _that = value.getTargetCoordinateSystem();
-        const std::string path_7 = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
-        Arvida::RDF::Context ctx_7(ctx, path_7);
-        Sord::URI node_7(ctx.model.world(), path_7);
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
+         if (Arvida::RDF::isValidValue(_that))
+         {
+         const std::string that_path = (::get_coordinate_systems_path(ctx)) + "/" + (_that ? _that->getName() : "");
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), that_node);
+         }
+    }
+    // Serialize member getTranslation
+    {
+        const auto & _that = value.getTranslation();
+        if (Arvida::RDF::isValidValue(_that))
+        {
+         const std::string that_path = (::get_poses_path(ctx)) + "/" + (_that ? _that->getName() : "");
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+            Arvida::RDF::toRDF(that_ctx, that_node, _that);
+            ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:translation"), that_node);
+        }
     }
 
-    if (true && true && value.getTranslation())
-    {
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:translation"), Arvida::RDF::toRDF(ctx, value.getTranslation()));
-    }
+    // Serialize member getRotation
+     {
+         const auto & _that = value.getRotation();
+         if (Arvida::RDF::isValidValue(_that))
+         {
 
-    if (true && true && value.getRotation())
-    {
-        ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:rotation"), Arvida::RDF::toRDF(ctx, value.getRotation()));
-    }
+         const std::string that_path = (::get_poses_path(ctx)) + "/" + (_that ? _that->getName() : "");
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:rotation"), that_node);
+
+
+         }
+     }
 
     return _this;
 }
@@ -129,117 +264,281 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Bone &value
      {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "skel:Bone"));
 }
-    ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:startJoint"), Arvida::RDF::toRDF(ctx, value.getStartJoint()));
+     // Serialize member getStartJoint
+     {
+         const auto & _that = value.getStartJoint();
+         if (Arvida::RDF::isValidValue(_that))
+         {
 
-    ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:endJoint"), Arvida::RDF::toRDF(ctx, value.getEndJoint()));
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:startJoint"), that_node);
+         }
+     }
+     // Serialize member getEndJoint
+     {
+         const auto & _that = value.getEndJoint();
+         if (Arvida::RDF::isValidValue(_that))
+         {
 
+         const std::string &that_path = ctx.path;
+         const Arvida::RDF::Context &that_ctx = ctx;
+         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:endJoint"), that_node);
+         }
+     }
     return _this;
 }
 
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Skeleton &value)
 {
-    using namespace Sord;
-    ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "skel:Skeleton"));
+     {
 
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "skel:Skeleton"));
+
+
+     }
+     // Serialize member getBones
+     {
+         const auto & _that = value.getBones();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+
+
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = (::get_segments_path(ctx)) + "/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:skeletonBone"), element_node);
+
+         }
+         }
+     }
+     // Serialize member getJoints
     {
-        const auto & _container = value.getBones();
-        for (auto it = std::begin(_container); it != std::end(_container); ++it)
-        {
-            const auto & _that = *it;
-        const std::string path_7 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
-            Arvida::RDF::Context ctx_7(ctx, path_7);
-            Sord::URI node_7(ctx.model.world(), path_7);
-            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonBone"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
-        }
-    }
-    {
-        const auto & _container = value.getJoints();
-        for (auto it = std::begin(_container); it != std::end(_container); ++it)
-        {
-            const auto & _that = *it;
-        const std::string path_11 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
-            Arvida::RDF::Context ctx_11(ctx, path_11);
-            Sord::URI node_11(ctx.model.world(), path_11);
-            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonJoint"), Arvida::RDF::toRDF(ctx_11, node_11, _that));
-        }
-    }
-    {
-        const auto & _container = value.getRoots();
-        for (auto it = std::begin(_container); it != std::end(_container); ++it)
-        {
-            const auto & _that = *it;
-        const std::string path_15 = (::get_segments_path(ctx)) + "/" + (_that ? _that->getName() : "");
-            Arvida::RDF::Context ctx_15(ctx, path_15);
-            Sord::URI node_15(ctx.model.world(), path_15);
-            ctx.model.add_statement(_this, Curie(ctx.model.world(), "skel:skeletonRoot"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
-        }
-    }
+         const auto & _that = value.getJoints();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+
+
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = (::get_segments_path(ctx)) + "/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:skeletonJoint"), element_node);
+
+         }
+         }
+     }
+     // Serialize member getRoots
+     {
+         const auto & _that = value.getRoots();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+
+
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = (::get_segments_path(ctx)) + "/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "skel:skeletonRoot"), element_node);
+
+         }
+         }
+     }
     return _this;
 }
 
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
 {
-    using namespace Sord;
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "service:SkeletonTrackingService"));
+     {
 
-    {
-        const auto & _that = value.getCoordinateSystems();
-        const std::string path_7 = ctx.path + "/coordinateSystems/";
-        Arvida::RDF::Context ctx_7(ctx, path_7);
-        Sord::URI node_7(ctx.model.world(), path_7);
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "service:SkeletonTrackingService"));
 
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerCoordinateSystems"), node_7);
 
-        ctx.model.add_statement(node_7, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "core:Container"));
+     }
+     // Serialize member getCoordinateSystems
+     {
+         const auto & _that = value.getCoordinateSystems();
+         if (Arvida::RDF::isValidValue(_that))
+         {
 
-        for (auto it = std::begin(_that); it != std::end(_that); ++it)
-        {
-            const auto & _that = *it;
-            const std::string path_15 = ctx.path + "/coordinateSystems/" + (_that ? _that->getName() : "");
-            Arvida::RDF::Context ctx_15(ctx, path_15);
-            Sord::URI node_15(ctx.model.world(), path_15);
-            ctx.model.add_statement(node_7, Curie(ctx.model.world(), "core:member"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
-        }
-    }
+         const std::string that_path = ctx.path + "/coordinateSystems/";
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
 
-    {
-        const auto & _that = value.getPoses();
-        const std::string path_11 = ctx.path + "/poses/";
-        Arvida::RDF::Context ctx_11(ctx, path_11);
-        Sord::URI node_11(ctx.model.world(), path_11);
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerPoses"), Arvida::RDF::toRDF(ctx_11, node_11, _that));
-    }
-    {
-        const auto & _that = value.getSegments();
-        const std::string path_15 = ctx.path + "/segments/";
-        Arvida::RDF::Context ctx_15(ctx, path_15);
-        Sord::URI node_15(ctx.model.world(), path_15);
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerSegments"), Arvida::RDF::toRDF(ctx_15, node_15, _that));
-    }
-    {
-        const auto & _that = value.getSkeletons();
-        const std::string path_19 = ctx.path + "/skeletons/";
-        Arvida::RDF::Context ctx_19(ctx, path_19);
-        Sord::URI node_19(ctx.model.world(), path_19);
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "service:trackerSkeletons"), Arvida::RDF::toRDF(ctx_19, node_19, _that));
-    }
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "service:trackerCoordinateSystems"), that_node);
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "core:Container"));
+
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = ctx.path + "/coordinateSystems/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+
+
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "core:member"), element_node);
+
+         }
+         }
+     }
+// Serialize member getPoses
+     {
+         const auto & _that = value.getPoses();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string that_path = ctx.path + "/poses/";
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "service:trackerPoses"), that_node);
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "core:Container"));
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = ctx.path + "/poses/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+
+
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "core:member"), element_node);
+
+         }
+         }
+     }
+     // Serialize member getSegments
+     {
+         const auto & _that = value.getSegments();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string that_path = ctx.path + "/segments/";
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "service:trackerSegments"), that_node);
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "core:Container"));
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = ctx.path + "/segments/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+
+
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "core:member"), element_node);
+
+         }
+         }
+     }
+     // Serialize member getSkeletons
+     {
+         const auto & _that = value.getSkeletons();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string that_path = ctx.path + "/skeletons/";
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "service:trackerSkeletons"), that_node);
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "core:Container"));
+
+
+         for (auto it = std::begin(_that); it != std::end(_that); ++it)
+         {
+             const auto & _element = *it;
+             const std::string element_path = ctx.path + "/skeletons/" + (_element ? _element->getName() : "");
+             Arvida::RDF::Context element_ctx(ctx, element_path);
+             Sord::URI element_node(ctx.model.world(), element_path);
+             if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
+             Arvida::RDF::toRDF(element_ctx, element_node, _element);
+
+
+
+          ctx.model.add_statement(that_node, Sord::Curie(ctx.model.world(), "core:member"), element_node);
+
+         }
+         }
+     }
     return _this;
 }
 
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::TrackingServiceProvider &value)
 {
-    using namespace Sord;
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "rdf:type"), Curie(ctx.model.world(), "core:TrackingServiceProvider"));
+     {
 
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "core:TrackingServiceProvider"));
+
+
+     }
+     // Serialize member getSkeletonTracker
     {
         const auto & _that = value.getSkeletonTracker();
-        const std::string path_7 = ctx.path + "/skelTracker";
-        Arvida::RDF::Context ctx_7(ctx, path_7);
-        Sord::URI node_7(ctx.model.world(), path_7);
-        ctx.model.add_statement(_this, Curie(ctx.model.world(), "core:service"), Arvida::RDF::toRDF(ctx_7, node_7, _that));
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         const std::string that_path = ctx.path + "/skelTracker";
+         Arvida::RDF::Context that_ctx(ctx, that_path);
+         Sord::URI that_node(ctx.model.world(), that_path);
+         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
+         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+
+          ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "core:service"), that_node);
+
+
+         }
     }
     return _this;
 }

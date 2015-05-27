@@ -58,6 +58,39 @@ inline Triple find_triple(Sord::Model &model, const Sord::Node &subject, const S
     return Triple(iter.get_subject(), iter.get_predicate(), iter.get_object());
 }
 
+inline bool isNodeExists(Sord::Model &model, const Sord::Node &node)
+{
+    Sord::Node empty;
+    {
+        Sord::Iter iter = model.find(node, empty, empty);
+        if (!iter.end())
+            return true;
+    }
+    {
+        Sord::Iter iter = model.find(empty, empty, node);
+        if (!iter.end())
+            return true;
+    }
+    {
+        Sord::Iter iter = model.find(empty, node, empty);
+        if (!iter.end())
+            return true;
+    }
+    return false;
+}
+
+template <class T>
+inline bool isValidValue(const T &value)
+{
+    return true;
+}
+
+template < class T >
+inline bool isValidValue(const std::shared_ptr<T> &value)
+{
+    return value.operator bool();
+}
+
 // pathOf
 
 template < class T >

@@ -222,11 +222,13 @@ public:
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { targetCoordinateSystem_ = targetCoordinateSystem; }
 
     RdfStmt($this, "spatial:translation", $that)
+    RdfAbsolutePath("{::get_poses_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Translation > & getTranslation() const { return translation_; }
 
     void setTranslation(const std::shared_ptr< Translation > & translation) { translation_ = translation; }
 
     RdfStmt($this, "spatial:rotation", $that)
+    RdfAbsolutePath("{::get_poses_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Rotation > & getRotation() const { return rotation_; }
 
     void setRotation(const std::shared_ptr< Rotation > & rotation) { rotation_ = rotation; }
@@ -300,7 +302,7 @@ public:
 
     const std::string & getName() const { return name_; }
 
-    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
+    RdfAbsoluteElementPath("{::get_segments_path($ctx)}/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonBone", $that.foreach)
     const std::vector< std::shared_ptr<Bone> > & getBones() const { return bones_; }
 
@@ -314,7 +316,7 @@ public:
         bones_ = std::move(bones);
     }
 
-    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
+    RdfAbsoluteElementPath("{::get_segments_path($ctx)}/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonJoint", $that.foreach)
     const std::vector< std::shared_ptr<Joint> > & getJoints() const { return joints_; }
 
@@ -328,7 +330,7 @@ public:
         joints_ = std::move(joints);
     }
 
-    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
+    RdfAbsoluteElementPath("{::get_segments_path($ctx)}/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonRoot", $that.foreach)
     const std::vector< std::shared_ptr<Segment> > & getRoots() const { return roots_; }
     void setRoots(const std::vector< std::shared_ptr<Segment> > &roots) { roots_ = roots; }
@@ -358,6 +360,7 @@ public:
     { }
 
     RdfPath("/coordinateSystems/")
+    RdfElementPath("/coordinateSystems/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "service:trackerCoordinateSystems", $that)
     RdfStmt($that, "rdf:type", "core:Container")
     RdfStmt($that, "core:member", $that.foreach)
@@ -377,7 +380,10 @@ public:
     }
 
     RdfPath("/poses/")
+    RdfElementPath("/poses/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "service:trackerPoses", $that)
+    RdfStmt($that, "rdf:type", "core:Container")
+    RdfStmt($that, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<Pose> > & getPoses() const
     {
         return poses_;
@@ -394,7 +400,10 @@ public:
     }
 
     RdfPath("/segments/")
+    RdfElementPath("/segments/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "service:trackerSegments", $that)
+    RdfStmt($that, "rdf:type", "core:Container")
+    RdfStmt($that, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<Segment> > & getSegments() const
     {
         return segments_;
@@ -411,7 +420,10 @@ public:
     }
 
     RdfPath("/skeletons/")
+    RdfElementPath("/skeletons/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "service:trackerSkeletons", $that)
+    RdfStmt($that, "rdf:type", "core:Container")
+    RdfStmt($that, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<Skeleton> > & getSkeletons() const
     {
         return skeletons_;
