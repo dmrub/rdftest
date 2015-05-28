@@ -93,19 +93,19 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Bone &value)
     return toRDF(ctx, _this, static_cast<const ::Segment &>(value));
 }
 
-class PoseVisitor : public Visitor<const Pose, NodeRef, const Context &, NodeRef>
+class QuantityVisitor : public Visitor<const Quantity, NodeRef, const Context &, NodeRef>
 {
 public:
-    META_Visitor(PoseVisitor, toRDF)
+    META_Visitor(QuantityVisitor, toRDF)
 
-PoseVisitor()
+    QuantityVisitor()
     {
         // Set visitables classes (no need to specify base class)
         META_Visitables(Translation, Rotation);
     }
 
 protected:
-    NodeRef toRDF(const ::Pose & cs, const Context &ctx, NodeRef _this)
+    NodeRef toRDF(const ::Quantity & cs, const Context &ctx, NodeRef _this)
     {
         return toRDF_impl(ctx, _this, cs);
     }
@@ -123,25 +123,25 @@ protected:
 };
 
 template <>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Quantity &value)
 {
-    PoseVisitor v;
+    QuantityVisitor v;
     return v(value, ctx, _this);
 }
 
 template <>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &value)
 {
-    return toRDF(ctx, _this, static_cast<const ::Pose &>(value));
+    return toRDF(ctx, _this, static_cast<const ::Quantity &>(value));
 }
 
 template <>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
 {
-    return toRDF(ctx, _this, static_cast<const ::Pose &>(value));
+    return toRDF(ctx, _this, static_cast<const ::Quantity &>(value));
 }
 
-}
-}
+} // namespace RDF
+} // namespace Arvida
 
 #endif /* KINECTTRAITS_HPP_INCLUDED */

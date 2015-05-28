@@ -87,10 +87,10 @@ int main(int argc, char *argv[])
     leftUpperArm->setTranslation(leftUpperArmTranslation);
     leftUpperArm->setEndJoint(leftElbow);
 
-    std::vector< std::shared_ptr<Pose> > poses;
-    poses.push_back(leftElbowRotation);
-    poses.push_back(leftLowerArmTranslation);
-    poses.push_back(leftUpperArmTranslation);
+    std::vector< std::shared_ptr<Quantity> > quantities;
+    quantities.push_back(leftElbowRotation);
+    quantities.push_back(leftLowerArmTranslation);
+    quantities.push_back(leftUpperArmTranslation);
 
     auto resc28 = std::make_shared<::Skeleton>("resc28");
     std::vector< std::shared_ptr<Bone> > bones;
@@ -117,22 +117,20 @@ int main(int argc, char *argv[])
 
     TrackingServiceProvider kinect;
     kinect.getSkeletonTracker().setCoordinateSystems(std::move(coordinateSystems));
-    kinect.getSkeletonTracker().setPoses(std::move(poses));
+    kinect.getSkeletonTracker().setQuantities(std::move(quantities));
     kinect.getSkeletonTracker().setSegments(std::move(segments));
     kinect.getSkeletonTracker().setSkeletons(std::move(skeletons));
 
-    PathManager pm("file:///example.com");
+    PathManager pm("file:///example.com/kinect");
 
     {
         Arvida::RDF::Context ctx(model, pm.base_path, &pm);
         URI kinect_node(world, pm.base_path);
 
-        //Arvida::RDF::toRDF(ctx, kinect_node, *leftElbow);
-        //Arvida::RDF::toRDF(ctx, kinect_node, resc28);
         Arvida::RDF::toRDF(ctx, kinect_node, kinect);
     }
 
-    std::cout << "Writing poses to kinect_sordmm.ttl" << std::endl;
+    std::cout << "Writing RDF to kinect_sordmm.ttl" << std::endl;
 
     model.write_to_file("kinect_sordmm.ttl", SERD_TURTLE,
         (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));
@@ -147,7 +145,7 @@ int main(int argc, char *argv[])
 
         URI pose_node(world, uuid_url);
 
-        Pose pose(
+        Quantity pose(
             Translation(1, 2, 3),
             Rotation(1, 1, 1, 1));
 

@@ -22,17 +22,17 @@ public:
 
 std::string get_segments_path(const Arvida::RDF::Context &ctx)
 {
-    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/kinect/skelTracker/segments";
+    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/skelTracker/segments";
 }
 
 std::string get_coordinate_systems_path(const Arvida::RDF::Context &ctx)
 {
-    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/kinect/skelTracker/coordinateSystems";
+    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/skelTracker/coordinateSystems";
 }
 
-std::string get_poses_path(const Arvida::RDF::Context &ctx)
+std::string get_quantities_path(const Arvida::RDF::Context &ctx)
 {
-    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/kinect/skelTracker/poses";
+    return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/skelTracker/quantities";
 }
 
 #endif /* KINECTUTILS_HPP_INCLUDED */

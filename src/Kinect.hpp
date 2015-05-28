@@ -58,23 +58,23 @@ public:
 private:
 };
 
-// Pose
+// Quantity
 
 class
 
 RdfUseVisitor()
 
-Pose: public Visitable<Pose>
+Quantity: public Visitable<Quantity>
 {
 public:
-    META_BaseVisitable(Pose)
+    META_BaseVisitable(Quantity)
 public:
 
-    Pose(const std::string &name) : name_(name) { }
+    Quantity(const std::string &name) : name_(name) { }
 
     const std::string & getName() const { return name_; }
 
-    virtual ~Pose() { }
+    virtual ~Quantity() { }
 
 private:
     std::string name_;
@@ -90,24 +90,24 @@ RdfStmt($this, "vom:quantityKind", "vom:Angle")
 RdfStmt(_:2, "rdf:type", "maths:Vector4D")
 RdfStmt(_:2, "rdf:type", "maths:Quaternion")
 
-Rotation: public Pose
+Rotation: public Quantity
 {
 public:
 
-    META_Visitable(Rotation, Pose)
+    META_Visitable(Rotation, Quantity)
 
     Rotation(const std::string &name)
-        : Pose(name)
+        : Quantity(name)
         , rotation_{0.0f, 0.0f, 0.0f, 0.0f}
     { }
 
     Rotation(const std::string &name, float x, float y, float z, float w)
-        : Pose(name)
+        : Quantity(name)
         , rotation_{x, y, z, w}
     { }
 
     Rotation(const Rotation &other)
-        : Pose(other.getName())
+        : Quantity(other.getName())
         , rotation_{other.rotation_[0], other.rotation_[1], other.rotation_[2], other.rotation_[3]}
     { }
 
@@ -148,24 +148,24 @@ RdfStmt($this, "vom:quantityValue", _:2)
 RdfStmt($this, "vom:quantityKind", "vom:Length")
 RdfStmt(_:2, "rdf:type", "maths:Vector3D")
 
-Translation: public Pose
+Translation: public Quantity
 {
 public:
 
-    META_Visitable(Translation, Pose)
+    META_Visitable(Translation, Quantity)
 
     Translation(const std::string &name)
-        : Pose(name)
+        : Quantity(name)
         , translation_{0.0f, 0.0f, 0.0f}
     { }
 
     Translation(const std::string &name, float x, float y, float z)
-        : Pose(name)
+        : Quantity(name)
         , translation_{x, y, z}
     { }
 
     Translation(const Translation &other)
-        : Pose(other.getName())
+        : Quantity(other.getName())
         , translation_{other.translation_[0], other.translation_[1], other.translation_[2]}
     { }
 
@@ -222,13 +222,13 @@ public:
     void setTargetCoordinateSystem(const std::shared_ptr< CoordinateSystem > & targetCoordinateSystem) { targetCoordinateSystem_ = targetCoordinateSystem; }
 
     RdfStmt($this, "spatial:translation", $that)
-    RdfAbsolutePath("{::get_poses_path($ctx)}/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_quantities_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Translation > & getTranslation() const { return translation_; }
 
     void setTranslation(const std::shared_ptr< Translation > & translation) { translation_ = translation; }
 
     RdfStmt($this, "spatial:rotation", $that)
-    RdfAbsolutePath("{::get_poses_path($ctx)}/{$that ? $that->getName() : \"\"}")
+    RdfAbsolutePath("{::get_quantities_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Rotation > & getRotation() const { return rotation_; }
 
     void setRotation(const std::shared_ptr< Rotation > & rotation) { rotation_ = rotation; }
@@ -274,11 +274,13 @@ public:
     { }
 
     RdfStmt($this, "skel:startJoint", $that)
+    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Joint > & getStartJoint() const { return startJoint_; }
 
     void setStartJoint(const std::shared_ptr< Joint > & startJoint) { startJoint_ = startJoint; }
 
     RdfStmt($this, "skel:endJoint", $that)
+    RdfAbsolutePath("{::get_segments_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< Joint > & getEndJoint() const { return endJoint_; }
 
     void setEndJoint(const std::shared_ptr< Joint > & endJoint) { endJoint_ = endJoint; }
@@ -354,7 +356,7 @@ public:
 
     SkeletonTrackingService()
         : coordinateSystems_()
-        , poses_()
+        , quantities_()
         , segments_()
         , skeletons_()
     { }
@@ -379,24 +381,24 @@ public:
         coordinateSystems_ = std::move(coordinateSystems);
     }
 
-    RdfPath("/poses/")
-    RdfElementPath("/poses/{$element ? $element->getName() : \"\"}")
-    RdfStmt($this, "service:trackerPoses", $that)
+    RdfPath("/quantities/")
+    RdfElementPath("/quantities/{$element ? $element->getName() : \"\"}")
+    RdfStmt($this, "service:trackerQuantities", $that)
     RdfStmt($that, "rdf:type", "core:Container")
     RdfStmt($that, "core:member", $that.foreach)
-    const std::vector< std::shared_ptr<Pose> > & getPoses() const
+    const std::vector< std::shared_ptr<Quantity> > & getQuantities() const
     {
-        return poses_;
+        return quantities_;
     }
 
-    void setPoses(const std::vector< std::shared_ptr<Pose> > & poses)
+    void setQuantities(const std::vector< std::shared_ptr<Quantity> > & quantities)
     {
-        poses_ = poses;
+        quantities_ = quantities;
     }
 
-    void setPoses(std::vector< std::shared_ptr<Pose> > && poses )
+    void setQuantities(std::vector< std::shared_ptr<Quantity> > && quantities )
     {
-        poses_ = std::move(poses);
+        quantities_ = std::move(quantities);
     }
 
     RdfPath("/segments/")
@@ -441,7 +443,7 @@ public:
 
 private:
     std::vector< std::shared_ptr<CoordinateSystem> > coordinateSystems_;
-    std::vector< std::shared_ptr<Pose> > poses_;
+    std::vector< std::shared_ptr<Quantity> > quantities_;
     std::vector< std::shared_ptr<Segment> > segments_;
     std::vector< std::shared_ptr<Skeleton> > skeletons_;
 };
