@@ -8,7 +8,13 @@
 #ifndef KINECTUTILS_HPP_INCLUDED
 #define KINECTUTILS_HPP_INCLUDED
 
-#include "RDFTraits.hpp"
+#ifdef SEORD_LIB
+#include "SeordRDFTraits.hpp"
+#elif defined(REDLAND_LIB)
+#include "RedlandRDFTraits.hpp"
+#else
+#error "No library specified"
+#endif
 
 class PathManager
 {

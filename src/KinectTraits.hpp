@@ -8,7 +8,16 @@
 #ifndef KINECTTRAITS_HPP_INCLUDED
 #define KINECTTRAITS_HPP_INCLUDED
 
-#include "GenKinectTraits.hpp"
+#include "Kinect.hpp"
+#include "visitor/Visitor.hpp"
+
+#ifdef SEORD_LIB
+#include "GenSeordKinectTraits.hpp"
+#elif defined(REDLAND_LIB)
+#include "GenRedlandKinectTraits.hpp"
+#else
+#error "No library specified"
+#endif
 
 namespace Arvida
 {

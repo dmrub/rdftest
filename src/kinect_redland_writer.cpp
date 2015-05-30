@@ -1,5 +1,5 @@
 /*
- * kinect_writer.cpp
+ * kinect_redland_writer.cpp
  *
  *  Created on: 18 May, 2015
  *      Author: Dmitri Rubinstein
@@ -12,8 +12,9 @@
 #include <string>
 #include <iostream>
 
-#include "sord/sordmm.hpp"
-#include "serd/serd.h"
+#define REDLAND_LIB
+#include "redland.hpp"
+#include "GenRedlandKinectTraits.hpp"
 #include "KinectTraits.hpp"
 
 
@@ -30,7 +31,7 @@
 
 int main(int argc, char *argv[])
 {
-    using namespace Sord;
+    using namespace Redland;
 
     int num = 1;
 
@@ -39,19 +40,21 @@ int main(int argc, char *argv[])
     }
 
     World world;
+    Namespaces namespaces;
 
-    world.add_prefix("rdf", RDF(""));
-    world.add_prefix("maths", MATHS(""));
-    world.add_prefix("spatial", SPATIAL(""));
-    world.add_prefix("tracking", TRACKING(""));
-    world.add_prefix("vom", VOM(""));
-    world.add_prefix("mea", MEA(""));
-    world.add_prefix("xsd", XSD(""));
-    world.add_prefix("skel", SKEL(""));
-    world.add_prefix("service", SERVICE(""));
-    world.add_prefix("core", CORE(""));
+    namespaces.add_prefix("rdf", RDF(""));
+    namespaces.add_prefix("maths", MATHS(""));
+    namespaces.add_prefix("spatial", SPATIAL(""));
+    namespaces.add_prefix("tracking", TRACKING(""));
+    namespaces.add_prefix("vom", VOM(""));
+    namespaces.add_prefix("mea", MEA(""));
+    namespaces.add_prefix("xsd", XSD(""));
+    namespaces.add_prefix("skel", SKEL(""));
+    namespaces.add_prefix("service", SERVICE(""));
+    namespaces.add_prefix("core", CORE(""));
 
-    Model model(world, "file:///example.com/");
+    Storage storage(world, "hashes", 0, "hash-type='memory'");
+    Model model(world, storage, 0);
 
     std::cout << "Producing " << num << " kinect dataset(s)" << std::endl;
 
@@ -124,38 +127,38 @@ int main(int argc, char *argv[])
     PathManager pm("file:///example.com/kinect");
 
     {
-        Arvida::RDF::Context ctx(model, pm.base_path, &pm);
-        URI kinect_node(world, pm.base_path);
+        Arvida::RDF::Context ctx(world, namespaces, model, pm.base_path, &pm);
+        Node kinect_node(world, pm.base_path);
 
         Arvida::RDF::toRDF(ctx, kinect_node, kinect);
     }
 
-    std::cout << "Writing RDF to kinect_sordmm.ttl" << std::endl;
+    std::cout << "Writing RDF to kinect_redland.ttl" << std::endl;
 
-    model.write_to_file("kinect_sordmm.ttl", SERD_TURTLE,
-        (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));
-
-
-#if 0
-    for (int i = 0; i < num; ++i)
+    /* serialize */
     {
-        const std::string uuid_url = "file:///example.com/" + std::to_string(i);
+        librdf_serializer *ser = librdf_new_serializer(world.c_obj(), "turtle", NULL, NULL);
 
-        Arvida::RDF::Context ctx(model, uuid_url);
+        namespaces.register_with_serializer(world, ser);
 
-        URI pose_node(world, uuid_url);
+        if (!ser) {
+            fprintf(stderr, "Could not load turtle serializer");
+        }
+        FILE *fd = fopen("kinect_redland.ttl", "wb");
 
-        Quantity pose(
-            Translation(1, 2, 3),
-            Rotation(1, 1, 1, 1));
+        librdf_serializer_serialize_model_to_file_handle(ser, fd, NULL, model.c_obj());
 
-        Arvida::RDF::toRDF(ctx, pose_node, pose);
+        fclose(fd);
+
+        librdf_free_serializer(ser);
     }
 
-    std::cout << "Writing poses to pose_sordmm.ttl" << std::endl;
+    /* free everything */
 
-    model.write_to_file("pose_sordmm.ttl", SERD_TURTLE,
-        (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));
+#ifdef LIBRDF_MEMORY_DEBUG
+    librdf_memory_report(stderr);
 #endif
-    return 0;
+
+    /* keep gcc -Wall happy */
+    return(0);
 }

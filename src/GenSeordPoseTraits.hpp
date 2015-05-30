@@ -1,7 +1,7 @@
 #ifndef POSE_TRAITS_HPP_INCLUDED
 #define POSE_TRAITS_HPP_INCLUDED
 
-#include "RDFTraits.hpp"
+#include "SeordRDFTraits.hpp"
 #include "Pose.hpp"
 
 namespace Arvida

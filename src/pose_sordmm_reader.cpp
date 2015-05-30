@@ -13,10 +13,11 @@
 #include <iostream>
 #include <tuple>
 
+#define SEORD_LIB
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
 #include "Pose.hpp"
-#include "PoseTraits.hpp"
+#include "GenSeordPoseTraits.hpp"
 
 #define RDF(x) "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x
 #define SPATIAL(x) "http://vocab.arvida.de/2014/03/spatial/vocab#" x

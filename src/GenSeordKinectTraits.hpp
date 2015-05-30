@@ -1,7 +1,7 @@
 #ifndef KINECT_TRAITS
 #define KINECT_TRAITS
 
-#include "RDFTraits.hpp"
+#include "SeordRDFTraits.hpp"
 #include "Kinect.hpp"
 #include "KinectUtils.hpp"
 

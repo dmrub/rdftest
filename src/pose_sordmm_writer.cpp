@@ -1,7 +1,7 @@
 /*
- * pose_sord.cpp
+ * pose_sordmm2.cpp
  *
- *  Created on: Feb 20, 2015
+ *  Created on: Apr 15, 2015
  *      Author: Dmitri Rubinstein
  */
 
@@ -12,9 +12,11 @@
 #include <string>
 #include <iostream>
 
+#define SEORD_LIB
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
-#include "Profiler.h"
+#include "Pose.hpp"
+#include "GenSeordPoseTraits.hpp"
 
 #define RDF(x) "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x
 #define SPATIAL(x) "http://vocab.arvida.de/2014/03/spatial/vocab#" x
@@ -62,189 +64,28 @@ int main(int argc, char *argv[])
 
     Model model(world, "http://test.arvida.de/");
 
+
     std::cout << "Producing " << num << " poses" << std::endl;
-
-    MIDDLEWARENEWSBRIEF_PROFILER_TIME_TYPE start, finish, elapsed;
-
-    start = MIDDLEWARENEWSBRIEF_PROFILER_GET_TIME;
 
     for (int i = 0; i < num; ++i)
     {
         const std::string uuid_url = "http://test.arvida.de/UUID" + std::to_string(i);
 
-        model.add_statement(
-            URI(world, uuid_url),
-            URI(world, RDF("type")),
-            URI(world, SPATIAL("SpatialRelationship")));
+        Arvida::RDF::Context ctx(model, uuid_url);
 
-        {
-            Node n1 = Node::blank_id(world);
+        URI pose_node(world, uuid_url);
 
-            model.add_statement(
-                URI(world, uuid_url),
-                URI(world, SPATIAL("sourceCoordinateSystem")),
-                n1
-            );
+        Pose pose(
+            Translation(1, 2, 3),
+            Rotation(1, 1, 1, 1));
 
-            model.add_statement(
-                n1,
-                URI(world, RDF("type")),
-                URI(world, MATHS("LeftHandedCartesianCoordinateSystem3D")));
-        }
-
-
-        {
-            Node n1 = Node::blank_id(world);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                URI(world, SPATIAL("targetCoordinateSystem")),
-                n1
-            );
-
-            model.add_statement(
-                n1,
-                URI(world, RDF("type")),
-                URI(world, MATHS("RightHandedCartesianCoordinateSystem2D"))
-            );
-        }
-
-        URI xsd_double(world, XSD("double"));
-
-        {
-
-            // translation
-            Node n1 = Node::blank_id(world);
-            Node n2 = Node::blank_id(world);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                URI(world, SPATIAL("translation")),
-                n1
-            );
-
-            model.add_statement(
-                n1,
-                URI(world, RDF("type")),
-                URI(world, SPATIAL("Translation3D"))
-            );
-
-            model.add_statement(
-                n1,
-                URI(world, VOM("quantityValue")),
-                n2
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, RDF("type")),
-                URI(world, MATHS("Vector3D"))
-            );
-
-
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("x")),
-                double_node(world, 1)
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("y")),
-                double_node(world, 2)
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("z")),
-                double_node(world, 3)
-            );
-
-        }
-
-        {
-            // rotation
-
-            Node n1 = Node::blank_id(world);
-            Node n2 = Node::blank_id(world);
-
-            model.add_statement(
-                URI(world, uuid_url),
-                URI(world, SPATIAL("rotation")),
-                n1);
-
-            model.add_statement(
-                n1,
-                URI(world, RDF("type")),
-                URI(world, SPATIAL("Rotation3D"))
-            );
-
-            model.add_statement(
-                n1,
-                URI(world, VOM("quantityValue")),
-                n2);
-
-            model.add_statement(
-                n2,
-                URI(world, RDF("type")),
-                URI(world, MATHS("Quaternion"))
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, RDF("type")),
-                URI(world, MATHS("Vector4D"))
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("x")),
-                double_node(world, 1));
-
-
-            model.add_statement(n2,
-                URI(world, MATHS("y")),
-                double_node(world, 1)
-            );
-
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("z")),
-                double_node(world, 1)
-            );
-
-            model.add_statement(
-                n2,
-                URI(world, MATHS("w")),
-                double_node(world, 1)
-            );
-        }
-
+        Arvida::RDF::toRDF(ctx, pose_node, pose);
     }
 
-    finish = MIDDLEWARENEWSBRIEF_PROFILER_GET_TIME;
-
-    elapsed = MIDDLEWARENEWSBRIEF_PROFILER_DIFF(finish, start);
-    printf("\n\nElapsed %s for model construction: %i (%f per pose)\n\n\n",
-           MIDDLEWARENEWSBRIEF_PROFILER_TIME_UNITS,
-           elapsed, double(elapsed)/num);
-
-    std::cout << "Writing poses to file pose_sordmm.ttl" << std::endl;
-
-    start = MIDDLEWARENEWSBRIEF_PROFILER_GET_TIME;
+    std::cout << "Writing poses to pose_sordmm.ttl" << std::endl;
 
     model.write_to_file("pose_sordmm.ttl", SERD_TURTLE,
         (SerdStyle)(SERD_STYLE_ABBREVIATED | SERD_STYLE_CURIED | SERD_STYLE_RESOLVED));
 
-    finish = MIDDLEWARENEWSBRIEF_PROFILER_GET_TIME;
-
-    elapsed = MIDDLEWARENEWSBRIEF_PROFILER_DIFF(finish, start);
-    printf("\n\nElapsed %s for model output: %i (%f per pose)\n\n\n",
-           MIDDLEWARENEWSBRIEF_PROFILER_TIME_UNITS,
-           elapsed, double(elapsed)/num);
-
-    /* keep gcc -Wall happy */
-    return(0);
+    return 0;
 }

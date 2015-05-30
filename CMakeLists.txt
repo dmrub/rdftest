@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(rdftest)
 
+# User options
+
+
+
 #--------------------------------------------------
 # load script for checking out projects from git
 #--------------------------------------------------
@@ -75,20 +79,45 @@ endif()
 set(seord_SKIP_FIND 1)
 add_subproject(seord)
 
+# Find packages
+
+find_package(Redland)
+find_package(Raptor)
+find_package(Rasqal)
+
 include_directories(
   seord/src/3rd/serd
   seord/src/3rd/sord
   seord/src/3rd/sord/src
   ${CMAKE_CURRENT_BINARY_DIR})
 
+add_executable(pose_sordmm_test_writer src/pose_sordmm_test_writer.cpp ${LIBHEADERS})
+target_link_libraries(pose_sordmm_test_writer seord)
+
 add_executable(pose_sordmm_writer src/pose_sordmm_writer.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm_writer seord)
-
-add_executable(pose_sordmm_writer2 src/pose_sordmm_writer2.cpp ${LIBHEADERS})
-target_link_libraries(pose_sordmm_writer2 seord)
 
 add_executable(pose_sordmm_reader src/pose_sordmm_reader.cpp ${LIBHEADERS})
 target_link_libraries(pose_sordmm_reader seord)
 
-add_executable(kinect_writer src/kinect_writer.cpp ${LIBHEADERS})
-target_link_libraries(kinect_writer seord)
+add_executable(kinect_seord_writer src/kinect_seord_writer.cpp ${LIBHEADERS})
+target_link_libraries(kinect_seord_writer seord)
+
+if(REDLAND_FOUND)
+  message(STATUS "Found Redland library")
+
+  message(STATUS "Found Raptor header: ${RAPTOR_INCLUDE_DIR}")
+
+  include_directories(
+    ${RAPTOR_INCLUDE_DIR}
+    ${REDLAND_INCLUDE_DIR}
+    ${RASQAL_INCLUDE_DIR}
+    )
+
+  add_executable(pose_redland_writer src/pose_redland_writer.cpp   ${LIBHEADERS})
+  target_link_libraries(pose_redland_writer ${REDLAND_LIBRARIES} ${RAPTOR_LIBRARIES})
+
+  add_executable(kinect_redland_writer src/kinect_redland_writer.cpp ${LIBHEADERS})
+  target_link_libraries(kinect_redland_writer ${REDLAND_LIBRARIES} ${RAPTOR_LIBRARIES})
+
+endif()
