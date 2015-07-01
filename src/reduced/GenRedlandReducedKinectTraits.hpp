@@ -193,10 +193,21 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
 }
 
 template<>
+inline PathType pathTypeOf(const Context &ctx, const ::Quantity &value)
+{
+    return RELATIVE_PATH;
+}
+
+template<>
+inline std::string pathOf(const Context &ctx, const ::Quantity &value)
+{
+    return "/quantities/" + value.getName();
+}
+
+template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
 {
     {
-
         ctx.model.add_statement(ctx.world, _this,
             Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
             Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("service:SkeletonTrackingService")));
@@ -219,7 +230,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
             for (auto it = std::begin(_that); it != std::end(_that); ++it)
             {
                 const auto & _element = *it;
-                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/" + (_element ? _element->getName() : "")));
+                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::NO_PATH, ""));
 
                 ctx.model.add_statement(ctx.world, that_node,
                     Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("core:member")), element_node);
