@@ -86,6 +86,7 @@ find_package(Raptor)
 find_package(Rasqal)
 
 include_directories(
+  src
   seord/src/3rd/serd
   seord/src/3rd/sord
   seord/src/3rd/sord/src
@@ -119,5 +120,9 @@ if(REDLAND_FOUND)
 
   add_executable(kinect_redland_writer src/kinect_redland_writer.cpp ${LIBHEADERS})
   target_link_libraries(kinect_redland_writer ${REDLAND_LIBRARIES} ${RAPTOR_LIBRARIES})
+
+
+  add_executable(kinect_redland_reduced_writer src/reduced/kinect_redland_reduced_writer.cpp ${LIBHEADERS})
+  target_link_libraries(kinect_redland_reduced_writer ${REDLAND_LIBRARIES} ${RAPTOR_LIBRARIES})
 
 endif()
