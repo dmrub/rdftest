@@ -201,7 +201,7 @@ inline PathType pathTypeOf(const Context &ctx, const ::Quantity &value)
 template<>
 inline std::string pathOf(const Context &ctx, const ::Quantity &value)
 {
-    return "/quantities/" + value.getName();
+    return value.getName();
 }
 
 template<>
@@ -230,7 +230,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
             for (auto it = std::begin(_that); it != std::end(_that); ++it)
             {
                 const auto & _element = *it;
-                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::NO_PATH, ""));
+                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
 
                 ctx.model.add_statement(ctx.world, that_node,
                     Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("core:member")), element_node);
