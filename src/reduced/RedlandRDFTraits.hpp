@@ -99,7 +99,7 @@ inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
 template<class T>
 inline PathType pathTypeOf(const Context &ctx, const T &value)
 {
-    return "";
+    return NO_PATH;
 }
 
 template<class T>
@@ -112,17 +112,48 @@ inline PathType pathTypeOf(const Context &ctx, const std::shared_ptr<T> &value)
 }
 
 // createRDFNode
+#if 0
+#define CREATE_RDF_NODE(thatNode, ctx, value, memberPathType, memberPath)
+const PathType thatPathType = Arvida::RDF::pathTypeOf(ctx, value);
+if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+{
+    return std::make_pair(Redland::Node::make_blank_node(ctx.world), ctx);
+}
+else
+{
+    std::string thatPath;
+    if (thatPathType == ABSOLUTE_PATH)
+        thatPath = Arvida::RDF::pathOf(ctx, value);
+    else {
+        switch (memberPathType)
+        {
+            case NO_PATH:
+                thatPath = ctx.path;
+                break;
+            case RELATIVE_PATH:
+                thatPath = ctx.path + memberPath;
+                break;
+            case ABSOLUTE_PATH:
+                thatPath = memberPath;
+                break;
+        }
+        if (thatPathType == RELATIVE_PATH)
+            thatPath += pathOf(ctx, value);
+    }
+    return std::make_pair(Redland::Node::make_uri_node(ctx.world, thatPath), Arvida::RDF::Context(ctx, thatPath));
+}
+#endif
 
 template<class T>
 Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
 {
     const PathType thatPathType = pathTypeOf(ctx, value);
-    Redland::Node thatNode;
     if (thatPathType == NO_PATH && memberPathType == NO_PATH)
     {
-        thatNode = Redland::Node::make_blank_node(ctx.world);
+        Redland::Node thatNode(Redland::Node::make_blank_node(ctx.world));
         if (!isNodeExists(ctx.model, thatNode))
             toRDF(ctx, thatNode, value);
+        return thatNode;
     }
     else
     {
@@ -145,12 +176,12 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
             if (thatPathType == RELATIVE_PATH)
                 thatPath += pathOf(ctx, value);
         }
-        thatNode = Redland::Node::make_uri_node(ctx.world, thatPath);
         Arvida::RDF::Context thatCtx(ctx, thatPath);
+        Redland::Node thatNode(Redland::Node::make_uri_node(ctx.world, thatPath));
         if (!isNodeExists(ctx.model, thatNode))
-            toRDF(thatCtx, thatNode, value);
+            toRDF(ctx, thatNode, value);
+        return thatNode;
     }
-    return thatNode;
 }
 
 // toRDF
@@ -165,7 +196,7 @@ Node toRDF(const Context &ctx, const T &value)
 template<class T>
 inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const T &value)
 {
-    return value.toRDF(ctx, thisNode);
+    return thisNode;
 }
 
 template<class T>
@@ -180,6 +211,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef thisNode, const std::shared_ptr
         return thisNode;
     }
 }
+
 //#define XSD_NS
 //"12345^^<http://www.w3.org/2001/XMLSchema#int>"
 template<>

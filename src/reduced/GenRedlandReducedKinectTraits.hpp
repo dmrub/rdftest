@@ -157,16 +157,10 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         const auto & _that = value.getX();
         if (Arvida::RDF::isValidValue(_that))
         {
-
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
             ctx.model.add_statement(ctx.world, _b0,
                 Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:x")), that_node);
-
         }
     }
     // Serialize member getY
@@ -175,12 +169,7 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
-
+            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
             ctx.model.add_statement(ctx.world, _b0,
                 Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:y")), that_node);
 
@@ -192,11 +181,7 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
             ctx.model.add_statement(ctx.world, _b0,
                 Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:z")), that_node);
@@ -223,10 +208,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
         const auto & _that = value.getQuantities();
         if (Arvida::RDF::isValidValue(_that))
         {
-
-            const std::string that_path = ctx.path + "/quantities/";
-            Arvida::RDF::Context that_ctx(ctx, that_path);
-            Redland::Node that_node(Redland::Node::make_uri_node(ctx.world, that_path));
+            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
 
             ctx.model.add_statement(ctx.world, _this,
                 Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("service:trackerQuantities")), that_node);
@@ -237,11 +219,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
             for (auto it = std::begin(_that); it != std::end(_that); ++it)
             {
                 const auto & _element = *it;
-                const std::string element_path = ctx.path + "/quantities/" + (_element ? _element->getName() : "");
-                Arvida::RDF::Context element_ctx(ctx, element_path);
-                Redland::Node element_node(Redland::Node::make_uri_node(ctx.world, element_path));
-                if (!Arvida::RDF::isNodeExists(ctx.model, element_node))
-                    Arvida::RDF::toRDF(element_ctx, element_node, _element);
+                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/" + (_element ? _element->getName() : "")));
 
                 ctx.model.add_statement(ctx.world, that_node,
                     Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("core:member")), element_node);
