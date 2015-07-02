@@ -63,6 +63,7 @@ private:
 class
 
 RdfUseVisitor()
+RdfPath("{$this->getName()}")
 
 Quantity: public Visitable<Quantity>
 {
@@ -206,7 +207,6 @@ public:
     { }
 
     RdfPath("/quantities/")
-    RdfElementPath("/quantities/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "service:trackerQuantities", $that)
     RdfStmt($that, "rdf:type", "core:Container")
     RdfStmt($that, "core:member", $that.foreach)

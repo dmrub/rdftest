@@ -10,12 +10,21 @@ namespace Arvida
 namespace RDF
 {
 
+inline PathType pathTypeOf_impl(const Context &ctx, const ::Quantity &value)
+{
+    return RELATIVE_PATH;
+}
+
+inline std::string pathOf_impl(const Context &ctx, const ::Quantity &value)
+{
+    const auto _this = &value;
+    return (_this->getName());
+}
+
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::CoordinateSystem &value)
 {
     {
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:CoordinateSystem")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:CoordinateSystem")));
     }
     return _this;
 }
@@ -25,10 +34,7 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::RightHanded
     toRDF_impl(ctx, _this, static_cast<const ::CoordinateSystem &>(value));
     {
 
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world,
-                ctx.namespaces.expand("maths:RightHandedCartesianCoordinateSystem3D")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:RightHandedCartesianCoordinateSystem3D")));
 
     }
     return _this;
@@ -45,20 +51,11 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
     Redland::Node _b0 = Redland::Node::make_blank_node(ctx.world);
     {
 
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("spatial:Rotation3D")));
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:quantityValue")), _b0);
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:quantityKind")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:Angle")));
-        ctx.model.add_statement(ctx.world, _b0,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:Vector4D")));
-        ctx.model.add_statement(ctx.world, _b0,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:Quaternion")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("spatial:Rotation3D")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:quantityValue")), _b0);
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:quantityKind")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:Angle")));
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:Vector4D")));
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:Quaternion")));
 
     }
     // Serialize member getX
@@ -67,14 +64,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:x")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:x")), that_node);
 
         }
     }
@@ -84,14 +76,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:y")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:y")), that_node);
 
         }
     }
@@ -101,14 +88,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:z")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:z")), that_node);
 
         }
     }
@@ -118,14 +100,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            const std::string &that_path = ctx.path;
-            const Arvida::RDF::Context &that_ctx = ctx;
-            Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-            if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-                Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:w")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:w")), that_node);
 
         }
     }
@@ -139,17 +116,10 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
     Redland::Node _b0 = Redland::Node::make_blank_node(ctx.world);
     {
 
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("spatial:Translation3D")));
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:quantityValue")), _b0);
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:quantityKind")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("vom:Length")));
-        ctx.model.add_statement(ctx.world, _b0,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:Vector3D")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("spatial:Translation3D")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:quantityValue")), _b0);
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:quantityKind")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("vom:Length")));
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:Vector3D")));
 
     }
     // Serialize member getX
@@ -157,10 +127,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         const auto & _that = value.getX();
         if (Arvida::RDF::isValidValue(_that))
         {
-            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
+            Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:x")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:x")), that_node); 
         }
     }
     // Serialize member getY
@@ -169,9 +138,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:y")), that_node);
+            Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
+            ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:y")), that_node); 
 
         }
     }
@@ -181,10 +150,9 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
         if (Arvida::RDF::isValidValue(_that))
         {
 
-            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::NO_PATH, ""));
+            Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
-            ctx.model.add_statement(ctx.world, _b0,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("maths:z")), that_node);
+          ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:z")), that_node);
 
         }
     }
@@ -193,24 +161,10 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
 }
 
 template<>
-inline PathType pathTypeOf(const Context &ctx, const ::Quantity &value)
-{
-    return RELATIVE_PATH;
-}
-
-template<>
-inline std::string pathOf(const Context &ctx, const ::Quantity &value)
-{
-    return value.getName();
-}
-
-template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
 {
     {
-        ctx.model.add_statement(ctx.world, _this,
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-            Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("service:SkeletonTrackingService")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:SkeletonTrackingService")));
 
     }
 
@@ -219,21 +173,18 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
         const auto & _that = value.getQuantities();
         if (Arvida::RDF::isValidValue(_that))
         {
-            Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
+          Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
 
-            ctx.model.add_statement(ctx.world, _this,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("service:trackerQuantities")), that_node);
-            ctx.model.add_statement(ctx.world, that_node,
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("rdf:type")),
-                Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("core:Container")));
+
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:trackerQuantities")), that_node);
+          ctx.model.add_statement(ctx.world, that_node, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:Container")));
 
             for (auto it = std::begin(_that); it != std::end(_that); ++it)
             {
                 const auto & _element = *it;
-                Redland::Node element_node(Arvida::RDF::createRDFNode(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
+                Redland::Node element_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
 
-                ctx.model.add_statement(ctx.world, that_node,
-                    Redland::Node::make_uri_node(ctx.world, ctx.namespaces.expand("core:member")), element_node);
+          ctx.model.add_statement(ctx.world, that_node, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:member")), element_node);
 
             }
         }

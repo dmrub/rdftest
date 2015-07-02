@@ -102,6 +102,103 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
     return toRDF(ctx, _this, static_cast<const ::Quantity &>(value));
 }
 
+class QuantityPathVisitor : public Visitor<const Quantity, std::string, const Context &>
+{
+public:
+    META_Visitor(QuantityPathVisitor, pathOf)
+
+    QuantityPathVisitor()
+    {
+        // Set visitables classes (no need to specify base class)
+        META_Visitables(Translation, Rotation);
+    }
+
+protected:
+    std::string pathOf(const ::Quantity & cs, const Context &ctx)
+    {
+        return pathOf_impl(ctx, cs);
+    }
+
+    std::string pathOf(const ::Translation & cs, const Context &ctx)
+    {
+        return pathOf_impl(ctx, cs);
+    }
+
+    std::string pathOf(const ::Rotation & cs, const Context &ctx)
+    {
+        return pathOf_impl(ctx, cs);
+    }
+
+};
+
+template<>
+inline std::string pathOf(const Context &ctx, const ::Quantity &value)
+{
+    QuantityPathVisitor v;
+    return v(value, ctx);
+}
+
+template <>
+inline std::string pathOf(const Context &ctx, const ::Translation &value)
+{
+    return pathOf(ctx, static_cast<const ::Quantity &>(value));
+}
+
+template <>
+inline std::string pathOf(const Context &ctx, const ::Rotation &value)
+{
+    return pathOf(ctx, static_cast<const ::Quantity &>(value));
+}
+
+class QuantityPathTypeVisitor : public Visitor<const Quantity, PathType, const Context &>
+{
+public:
+    META_Visitor(QuantityPathTypeVisitor, pathTypeOf)
+
+    QuantityPathTypeVisitor()
+    {
+        // Set visitables classes (no need to specify base class)
+        META_Visitables(Translation, Rotation);
+    }
+
+protected:
+    PathType pathTypeOf(const ::Quantity & cs, const Context &ctx)
+    {
+        return pathTypeOf_impl(ctx, cs);
+    }
+
+    PathType pathTypeOf(const ::Translation & cs, const Context &ctx)
+    {
+        return pathTypeOf_impl(ctx, cs);
+    }
+
+    PathType pathTypeOf(const ::Rotation & cs, const Context &ctx)
+    {
+        return pathTypeOf_impl(ctx, cs);
+    }
+
+};
+
+template<>
+inline PathType pathTypeOf(const Context &ctx, const ::Quantity &value)
+{
+    QuantityPathTypeVisitor v;
+    return v(value, ctx);
+}
+
+template <>
+inline PathType pathTypeOf(const Context &ctx, const ::Translation &value)
+{
+    return pathTypeOf(ctx, static_cast<const ::Quantity &>(value));
+}
+
+template <>
+inline PathType pathTypeOf(const Context &ctx, const ::Rotation &value)
+{
+    return pathTypeOf(ctx, static_cast<const ::Quantity &>(value));
+}
+
+
 } // namespace RDF
 } // namespace Arvida
 

@@ -151,6 +151,42 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
     if (thatPathType == NO_PATH && memberPathType == NO_PATH)
     {
         Redland::Node thatNode(Redland::Node::make_blank_node(ctx.world));
+        return thatNode;
+    }
+    else
+    {
+        std::string thatPath;
+        if (thatPathType == ABSOLUTE_PATH)
+            thatPath = pathOf(ctx, value);
+        else {
+            switch (memberPathType)
+            {
+                case NO_PATH:
+                    thatPath = ctx.path;
+                    break;
+                case RELATIVE_PATH:
+                    thatPath = ctx.path + memberPath;
+                    break;
+                case ABSOLUTE_PATH:
+                    thatPath = memberPath;
+                    break;
+            }
+            if (thatPathType == RELATIVE_PATH)
+                thatPath += pathOf(ctx, value);
+        }
+        Arvida::RDF::Context thatCtx(ctx, thatPath);
+        Redland::Node thatNode(Redland::Node::make_uri_node(ctx.world, thatPath));
+        return thatNode;
+    }
+}
+
+template<class T>
+Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
+{
+    const PathType thatPathType = pathTypeOf(ctx, value);
+    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    {
+        Redland::Node thatNode(Redland::Node::make_blank_node(ctx.world));
         if (!isNodeExists(ctx.model, thatNode))
             toRDF(ctx, thatNode, value);
         return thatNode;
