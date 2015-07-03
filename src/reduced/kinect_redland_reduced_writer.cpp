@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     quantities.push_back(leftUpperArmTranslation);
 
     SkeletonTrackingService sts;
-    sts.setQuantities(std::move(quantities));
+    sts.getQuantityManager().setQuantities(std::move(quantities));
 
     PathManager pm("file:///example.com/kinect");
 

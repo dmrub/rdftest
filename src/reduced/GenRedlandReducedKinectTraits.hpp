@@ -21,6 +21,19 @@ inline std::string pathOf_impl(const Context &ctx, const ::Quantity &value)
     return (_this->getName());
 }
 
+template<>
+inline PathType pathTypeOf(const Context &ctx, const ::QuantityManager &value)
+{
+    return RELATIVE_PATH;
+}
+
+template<>
+inline std::string pathOf(const Context &ctx, const ::QuantityManager &value)
+{
+    const auto _this = &value;
+    return "/quantities/";
+}
+
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::CoordinateSystem &value)
 {
     {
@@ -161,10 +174,10 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Translation
 }
 
 template<>
-inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::QuantityManager &value)
 {
     {
-          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:SkeletonTrackingService")));
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:Container")));
 
     }
 
@@ -173,22 +186,44 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTracking
         const auto & _that = value.getQuantities();
         if (Arvida::RDF::isValidValue(_that))
         {
-          Redland::Node that_node(Arvida::RDF::createRDFNode(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
 
 
-          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:trackerQuantities")), that_node);
-          ctx.model.add_statement(ctx.world, that_node, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:Container")));
 
             for (auto it = std::begin(_that); it != std::end(_that); ++it)
             {
                 const auto & _element = *it;
-                Redland::Node element_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _element, Arvida::RDF::RELATIVE_PATH, "/quantities/"));
+             Redland::Node element_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _element, Arvida::RDF::NO_PATH, ""));
 
-          ctx.model.add_statement(ctx.world, that_node, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:member")), element_node);
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("core:member")), element_node);
 
             }
         }
     }
+    return _this;
+}
+template<>
+inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::SkeletonTrackingService &value)
+{
+     {
+
+
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("rdf:type")), Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:SkeletonTrackingService")));
+
+
+     }
+     // Serialize member getQuantityManager
+     {
+         const auto & _that = value.getQuantityManager();
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
+          ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("service:trackerQuantities")), that_node);
+
+
+         }
+     }
     return _this;
 }
 

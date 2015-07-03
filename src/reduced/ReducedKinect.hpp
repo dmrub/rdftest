@@ -192,24 +192,19 @@ private:
     float translation_[ 3 ] ;
 };
 
-// SkeletonTrackingService
 
 class
 
-RdfStmt($this, "rdf:type", "service:SkeletonTrackingService")
+RdfPath("/quantities/")
+RdfStmt($this, "rdf:type", "core:Container")
 
-SkeletonTrackingService
+QuantityManager
 {
 public:
 
-    SkeletonTrackingService()
-        : quantities_()
-    { }
+    QuantityManager() { }
 
-    RdfPath("/quantities/")
-    RdfStmt($this, "service:trackerQuantities", $that)
-    RdfStmt($that, "rdf:type", "core:Container")
-    RdfStmt($that, "core:member", $that.foreach)
+    RdfStmt($this, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<Quantity> > & getQuantities() const
     {
         return quantities_;
@@ -225,9 +220,37 @@ public:
         quantities_ = std::move(quantities);
     }
 
-
 private:
     std::vector< std::shared_ptr<Quantity> > quantities_;
+};
+
+// SkeletonTrackingService
+
+class
+
+RdfStmt($this, "rdf:type", "service:SkeletonTrackingService")
+
+SkeletonTrackingService
+{
+public:
+
+    SkeletonTrackingService()
+        : quantityManager_()
+    { }
+
+    RdfStmt($this, "service:trackerQuantities", $that)
+    const QuantityManager & getQuantityManager() const
+    {
+        return quantityManager_;
+    }
+
+    QuantityManager & getQuantityManager()
+    {
+        return quantityManager_;
+    }
+
+private:
+    QuantityManager quantityManager_;
 };
 
 #endif

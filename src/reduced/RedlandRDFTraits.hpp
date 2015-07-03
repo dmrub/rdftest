@@ -215,7 +215,7 @@ Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memb
         Arvida::RDF::Context thatCtx(ctx, thatPath);
         Redland::Node thatNode(Redland::Node::make_uri_node(ctx.world, thatPath));
         if (!isNodeExists(ctx.model, thatNode))
-            toRDF(ctx, thatNode, value);
+            toRDF(thatCtx, thatNode, value);
         return thatNode;
     }
 }
