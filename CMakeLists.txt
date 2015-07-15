@@ -104,6 +104,9 @@ target_link_libraries(pose_sordmm_reader seord)
 add_executable(kinect_seord_writer src/kinect_seord_writer.cpp ${LIBHEADERS})
 target_link_libraries(kinect_seord_writer seord)
 
+add_executable(kinect_seord_reduced_writer src/reduced/kinect_seord_reduced_writer.cpp ${LIBHEADERS})
+target_link_libraries(kinect_seord_reduced_writer seord)
+
 if(REDLAND_FOUND)
   message(STATUS "Found Redland library")
 

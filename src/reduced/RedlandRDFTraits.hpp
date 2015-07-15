@@ -1,5 +1,5 @@
-#ifndef RDF_TRAITS_HPP_INCLUDED
-#define RDF_TRAITS_HPP_INCLUDED
+#ifndef REDLAND_RDF_TRAITS_HPP_INCLUDED
+#define REDLAND_RDF_TRAITS_HPP_INCLUDED
 
 #include "redland.hpp"
 #include <memory>
@@ -72,7 +72,7 @@ inline bool isValidValue(const std::shared_ptr<T> &value)
     return value.operator bool();
 }
 
-//
+// PathType
 
 enum PathType
 {

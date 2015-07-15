@@ -11,7 +11,7 @@
 #include "ReducedKinect.hpp"
 #include "visitor/Visitor.hpp"
 
-#ifdef SEORD_LIB
+#if defined(SEORD_LIB)
 #include "GenSeordReducedKinectTraits.hpp"
 #elif defined(REDLAND_LIB)
 #include "GenRedlandReducedKinectTraits.hpp"
