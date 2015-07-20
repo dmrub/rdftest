@@ -1,5 +1,5 @@
-#ifndef POSE_TRAITS
-#define POSE_TRAITS
+#ifndef TEST_POSE_TRAITS
+#define TEST_POSE_TRAITS
 
 #include "RedlandRDFTraits.hpp"
 #include "Pose.hpp"
@@ -29,11 +29,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:x")), that_node); 
 
@@ -46,11 +42,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:y")), that_node); 
 
@@ -63,11 +55,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:z")), that_node); 
 
@@ -80,11 +68,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:w")), that_node); 
 
@@ -117,11 +101,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &val
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:x")), that_node); 
 
@@ -134,11 +114,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &val
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:y")), that_node); 
 
@@ -151,11 +127,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &val
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string &that_path = ctx.path;
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Redland::Node that_node(Redland::Node::make_blank_node(ctx.world));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
 
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:z")), that_node); 
 
@@ -190,11 +162,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string that_path = ctx.path + "/transl";
-         Arvida::RDF::Context that_ctx(ctx, that_path);
-         Redland::Node that_node(Redland::Node::make_uri_node(ctx.world, that_path));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/transl"));
 
           ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("spatial:translation")), that_node); 
 
@@ -208,11 +176,7 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
          if (Arvida::RDF::isValidValue(_that))
          {
 
-         const std::string that_path = ctx.path + "/rot";
-         Arvida::RDF::Context that_ctx(ctx, that_path);
-         Redland::Node that_node(Redland::Node::make_uri_node(ctx.world, that_path));
-         if (!Arvida::RDF::isNodeExists(ctx.model, that_node))
-             Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/rot"));
 
           ctx.model.add_statement(ctx.world, _this, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("spatial:rotation")), that_node); 
 

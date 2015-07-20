@@ -1,5 +1,5 @@
-#ifndef POSE_TRAITS_HPP_INCLUDED
-#define POSE_TRAITS_HPP_INCLUDED
+#ifndef TEST_POSE_TRAITS
+#define TEST_POSE_TRAITS
 
 #include "SeordRDFTraits.hpp"
 #include "Pose.hpp"
@@ -9,55 +9,79 @@ namespace Arvida
 namespace RDF
 {
 
+
+
+
+
+
+
+
+
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Rotation &value)
 {
      Node _b0 = Node::blank_id(ctx.model.world());
      {
+
+
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:Rotation3D"));
-
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityValue"), _b0);
-
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Vector4D"));
-
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Quaternion"));
+
 
      }
      // Serialize member getX
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getX();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), that_node);
 
+
+         }
      }
      // Serialize member getY
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getY();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), that_node);
 
+
+         }
      }
      // Serialize member getZ
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getZ();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), that_node);
 
+
+         }
      }
      // Serialize member getW
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getW();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:w"), that_node);
 
+
+         }
      }
 
 
@@ -71,39 +95,52 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Translation &val
 {
      Node _b0 = Node::blank_id(ctx.model.world());
      {
+
+
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:Translation3D"));
-
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "vom:quantityValue"), _b0);
-
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:Vector3D"));
+
 
      }
      // Serialize member getX
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getX();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), that_node);
 
+
+         }
      }
      // Serialize member getY
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getY();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:y"), that_node);
 
+
+         }
      }
      // Serialize member getZ
      {
-         const Arvida::RDF::Context &that_ctx = ctx;
-         Sord::Node that_node(Sord::Node::blank_id(ctx.model.world()));
          const auto & _that = value.getZ();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
+
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:z"), that_node);
 
+
+         }
      }
 
 
@@ -117,37 +154,42 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
      Node _b1 = Node::blank_id(ctx.model.world());
      Node _b0 = Node::blank_id(ctx.model.world());
      {
+
+
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "spatial:SpatialRelationship"));
-
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:LeftHandedCartesianCoordinateSystem3D"));
-
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:sourceCoordinateSystem"), _b0);
-
           ctx.model.add_statement(_b1, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:RightHandedCartesianCoordinateSystem2D"));
-
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:targetCoordinateSystem"), _b1);
+
 
      }
      // Serialize member getTranslation
      {
-         const std::string that_path = ctx.path + "/transl";
-         Arvida::RDF::Context that_ctx(ctx, that_path);
-         Sord::URI that_node(ctx.model.world(), that_path);
          const auto & _that = value.getTranslation();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/transl"));
+
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:translation"), that_node);
 
+
+         }
      }
 
      // Serialize member getRotation
      {
-         const std::string that_path = ctx.path + "/rot";
-         Arvida::RDF::Context that_ctx(ctx, that_path);
-         Sord::URI that_node(ctx.model.world(), that_path);
          const auto & _that = value.getRotation();
-         Arvida::RDF::toRDF(that_ctx, that_node, _that);
+         if (Arvida::RDF::isValidValue(_that))
+         {
+
+         Sord::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::RELATIVE_PATH, "/rot"));
+
           ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "spatial:rotation"), that_node);
 
+
+         }
      }
 
     return _this;
@@ -156,8 +198,6 @@ inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Pose &value)
 template<>
 inline NodeRef toRDF(const Context &ctx, NodeRef _this, const ::Device &value)
 {
-     {
-     }
     return _this;
 }
 

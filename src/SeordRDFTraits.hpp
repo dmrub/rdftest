@@ -1,5 +1,5 @@
-#ifndef RDF_TRAITS_HPP_INCLUDED
-#define RDF_TRAITS_HPP_INCLUDED
+#ifndef SEORD_RDF_TRAITS_HPP_INCLUDED
+#define SEORD_RDF_TRAITS_HPP_INCLUDED
 
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
@@ -91,21 +91,121 @@ inline bool isValidValue(const std::shared_ptr<T> &value)
     return value.operator bool();
 }
 
+// PathType
+
+enum PathType
+{
+    NO_PATH, RELATIVE_PATH, ABSOLUTE_PATH
+};
+
 // pathOf
 
-template < class T >
+template<class T>
 inline std::string pathOf(const Context &ctx, const T &value)
 {
     return "";
 }
 
-template < class T >
+template<class T>
 inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
 {
     if (value)
         return pathOf(ctx, *value);
     else
         return "";
+}
+
+template<class T>
+inline PathType pathTypeOf(const Context &ctx, const T &value)
+{
+    return NO_PATH;
+}
+
+template<class T>
+inline PathType pathTypeOf(const Context &ctx, const std::shared_ptr<T> &value)
+{
+    if (value)
+        return pathTypeOf(ctx, *value);
+    else
+        return NO_PATH;
+}
+
+// createRDFNode
+
+template<class T>
+Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
+{
+    const PathType thatPathType = pathTypeOf(ctx, value);
+    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    {
+        Node thatNode(Node::blank_id(ctx.model.world()));
+        return thatNode;
+    }
+    else
+    {
+        std::string thatPath;
+        if (thatPathType == ABSOLUTE_PATH)
+            thatPath = pathOf(ctx, value);
+        else {
+            switch (memberPathType)
+            {
+                case NO_PATH:
+                    thatPath = ctx.path;
+                    break;
+                case RELATIVE_PATH:
+                    thatPath = ctx.path + memberPath;
+                    break;
+                case ABSOLUTE_PATH:
+                    thatPath = memberPath;
+                    break;
+            }
+            if (thatPathType == RELATIVE_PATH)
+                thatPath += pathOf(ctx, value);
+        }
+        Arvida::RDF::Context thatCtx(ctx, thatPath);
+        Sord::URI thatNode(ctx.model.world(), thatPath);
+        return thatNode;
+    }
+}
+
+template<class T>
+Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
+{
+    const PathType thatPathType = pathTypeOf(ctx, value);
+    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    {
+        Node thatNode(Node::blank_id(ctx.model.world()));
+        if (!isNodeExists(ctx.model, thatNode))
+            toRDF(ctx, thatNode, value);
+        return thatNode;
+    }
+    else
+    {
+        std::string thatPath;
+        if (thatPathType == ABSOLUTE_PATH)
+            thatPath = pathOf(ctx, value);
+        else {
+            switch (memberPathType)
+            {
+                case NO_PATH:
+                    thatPath = ctx.path;
+                    break;
+                case RELATIVE_PATH:
+                    thatPath = ctx.path + memberPath;
+                    break;
+                case ABSOLUTE_PATH:
+                    thatPath = memberPath;
+                    break;
+            }
+            if (thatPathType == RELATIVE_PATH)
+                thatPath += pathOf(ctx, value);
+        }
+        Arvida::RDF::Context thatCtx(ctx, thatPath);
+        Sord::URI thatNode(ctx.model.world(), thatPath);
+        if (!isNodeExists(ctx.model, thatNode))
+            toRDF(thatCtx, thatNode, value);
+        return thatNode;
+    }
 }
 
 // toRDF
