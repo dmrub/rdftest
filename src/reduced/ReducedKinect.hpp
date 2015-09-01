@@ -8,6 +8,9 @@
 
 #include "visitor/Visitor.hpp"
 #include "visitor/Visitable.hpp"
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 arvida_global_annotation(
     arvida_include("ReducedKinect.hpp"),
@@ -32,13 +35,14 @@ public:
     META_BaseVisitable(CoordinateSystem)
 public:
 
-    CoordinateSystem(const std::string &name) : name_(name) { }
+    CoordinateSystem(const std::string &name) : tag_(boost::uuids::random_generator()()), name_(name) { }
 
-    const std::string & getName() const { return name_; }
+    std::string getName() const { return boost::uuids::to_string(tag_); }
 
     virtual ~CoordinateSystem() { }
 
 private:
+    boost::uuids::uuid tag_;
     std::string name_;
 };
 
@@ -71,13 +75,14 @@ public:
     META_BaseVisitable(Quantity)
 public:
 
-    Quantity(const std::string &name) : name_(name) { }
+    Quantity(const std::string &name) : tag_(boost::uuids::random_generator()()), name_(name) { }
 
-    const std::string & getName() const { return name_; }
+    std::string getName() const { return boost::uuids::to_string(tag_); }
 
     virtual ~Quantity() { }
 
 private:
+    boost::uuids::uuid tag_;
     std::string name_;
 };
 
@@ -190,6 +195,7 @@ public:
 
 private:
     float translation_[ 3 ] ;
+    boost::uuids::uuid tag_;
 };
 
 
@@ -202,7 +208,7 @@ QuantityManager
 {
 public:
 
-    QuantityManager() { }
+    QuantityManager() : tag_(boost::uuids::random_generator()()) { }
 
     RdfStmt($this, "core:member", $that.foreach)
     const std::vector< std::shared_ptr<Quantity> > & getQuantities() const
@@ -220,7 +226,10 @@ public:
         quantities_ = std::move(quantities);
     }
 
+    std::string getUId() const { return boost::uuids::to_string(tag_); }
+
 private:
+    boost::uuids::uuid tag_;
     std::vector< std::shared_ptr<Quantity> > quantities_;
 };
 

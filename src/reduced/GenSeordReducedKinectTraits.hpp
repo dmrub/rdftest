@@ -99,7 +99,6 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
 
           ctx.model.add_statement(_b0, Sord::Curie(ctx.model.world(), "maths:x"), that_node);
 
-
          }
      }
      // Serialize member getY

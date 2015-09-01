@@ -19,20 +19,29 @@ struct Context
     Redland::World &world;
     Redland::Namespaces &namespaces;
     Redland::Model &model;
+    const std::string &base_path;
     const std::string &path;
     const void *user_data;
 
+    Context(Redland::World &world, Redland::Namespaces &namespaces, Redland::Model &model, const std::string &base_path,
+            const std::string &path, const void *user_data = 0)
+        : world(world), namespaces(namespaces), model(model), base_path(base_path), path(path), user_data(user_data)
+    {
+    }
+
     Context(Redland::World &world, Redland::Namespaces &namespaces, Redland::Model &model, const std::string &path,
             const void *user_data = 0)
-        : world(world), namespaces(namespaces), model(model), path(path), user_data(user_data)
+        : world(world), namespaces(namespaces), model(model), base_path(path), path(path), user_data(user_data)
     {
     }
+
     Context(const Context &ctx)
-        : world(ctx.world), namespaces(ctx.namespaces), model(ctx.model), path(ctx.path), user_data(ctx.user_data)
+        : world(ctx.world), namespaces(ctx.namespaces), model(ctx.model), base_path(ctx.base_path), path(ctx.path), user_data(ctx.user_data)
     {
     }
+
     Context(const Context &ctx, const std::string &path)
-        : world(ctx.world), namespaces(ctx.namespaces), model(ctx.model), path(path), user_data(ctx.user_data)
+        : world(ctx.world), namespaces(ctx.namespaces), model(ctx.model), base_path(ctx.base_path), path(path), user_data(ctx.user_data)
     {
     }
 };
@@ -76,7 +85,7 @@ inline bool isValidValue(const std::shared_ptr<T> &value)
 
 enum PathType
 {
-    NO_PATH, RELATIVE_PATH, ABSOLUTE_PATH
+    NO_PATH, RELATIVE_PATH, RELATIVE_TO_BASE_PATH, ABSOLUTE_PATH
 };
 
 // pathOf
@@ -109,6 +118,20 @@ inline PathType pathTypeOf(const Context &ctx, const std::shared_ptr<T> &value)
         return pathTypeOf(ctx, *value);
     else
         return NO_PATH;
+}
+
+std::string joinPath(const std::string &path1, const std::string path2)
+{
+    if (path2.empty())
+        return path1;
+    if (path1.empty())
+        return path2;
+
+    if (path1.back() == '/' && path2.front() == '/') {
+        return path1.substr(0, path1.size()-1) + path2;
+    } else {
+        return path1 + '/' + path2;
+    }
 }
 
 // createRDFNode
@@ -158,6 +181,8 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
         std::string thatPath;
         if (thatPathType == ABSOLUTE_PATH)
             thatPath = pathOf(ctx, value);
+        else if (thatPathType == RELATIVE_TO_BASE_PATH)
+            thatPath = ctx.base_path + pathOf(ctx, value);
         else {
             switch (memberPathType)
             {
@@ -165,14 +190,17 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
                     thatPath = ctx.path;
                     break;
                 case RELATIVE_PATH:
-                    thatPath = ctx.path + memberPath;
+                    thatPath = joinPath(ctx.path, memberPath);
+                    break;
+                case RELATIVE_TO_BASE_PATH:
+                    thatPath = joinPath(ctx.base_path, memberPath);
                     break;
                 case ABSOLUTE_PATH:
                     thatPath = memberPath;
                     break;
             }
             if (thatPathType == RELATIVE_PATH)
-                thatPath += pathOf(ctx, value);
+                thatPath = joinPath(thatPath, pathOf(ctx, value));
         }
         Arvida::RDF::Context thatCtx(ctx, thatPath);
         Redland::Node thatNode(Redland::Node::make_uri_node(ctx.world, thatPath));
@@ -196,6 +224,8 @@ Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memb
         std::string thatPath;
         if (thatPathType == ABSOLUTE_PATH)
             thatPath = pathOf(ctx, value);
+        else if (thatPathType == RELATIVE_TO_BASE_PATH)
+            thatPath = joinPath(ctx.base_path, pathOf(ctx, value));
         else {
             switch (memberPathType)
             {
@@ -203,14 +233,17 @@ Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memb
                     thatPath = ctx.path;
                     break;
                 case RELATIVE_PATH:
-                    thatPath = ctx.path + memberPath;
+                    thatPath = joinPath(ctx.path, memberPath);
+                    break;
+                case RELATIVE_TO_BASE_PATH:
+                    thatPath = joinPath(ctx.base_path, memberPath);
                     break;
                 case ABSOLUTE_PATH:
                     thatPath = memberPath;
                     break;
             }
             if (thatPathType == RELATIVE_PATH)
-                thatPath += pathOf(ctx, value);
+                thatPath = joinPath(thatPath, pathOf(ctx, value));
         }
         Arvida::RDF::Context thatCtx(ctx, thatPath);
         Redland::Node thatNode(Redland::Node::make_uri_node(ctx.world, thatPath));

@@ -16,12 +16,14 @@ typedef Sord::Node & NodeRef;
 struct Context
 {
     Sord::Model &model;
+    const std::string &base_path;
     const std::string &path;
     const void *user_data;
 
-    Context(Sord::Model &model, const std::string &path, const void *user_data = 0) : model(model), path(path), user_data(user_data) { }
-    Context(const Context &ctx) : model(ctx.model), path(ctx.path), user_data(ctx.user_data) { }
-    Context(const Context &ctx, const std::string &path) : model(ctx.model), path(path), user_data(ctx.user_data) { }
+    Context(Sord::Model &model, const std::string &base_path, const std::string &path, const void *user_data = 0) : model(model), base_path(base_path), path(path), user_data(user_data) { }
+    Context(Sord::Model &model, const std::string &path, const void *user_data = 0) : model(model), base_path(path), path(path), user_data(user_data) { }
+    Context(const Context &ctx) : model(ctx.model), base_path(ctx.base_path), path(ctx.path), user_data(ctx.user_data) { }
+    Context(const Context &ctx, const std::string &path) : model(ctx.model), base_path(ctx.base_path), path(path), user_data(ctx.user_data) { }
 };
 
 struct Triple
@@ -95,7 +97,7 @@ inline bool isValidValue(const std::shared_ptr<T> &value)
 
 enum PathType
 {
-    NO_PATH, RELATIVE_PATH, ABSOLUTE_PATH
+    NO_PATH, RELATIVE_PATH, RELATIVE_TO_BASE_PATH, ABSOLUTE_PATH
 };
 
 // pathOf
@@ -154,6 +156,9 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
                     break;
                 case RELATIVE_PATH:
                     thatPath = ctx.path + memberPath;
+                    break;
+                case RELATIVE_TO_BASE_PATH:
+                    thatPath = ctx.base_path + memberPath;
                     break;
                 case ABSOLUTE_PATH:
                     thatPath = memberPath;
