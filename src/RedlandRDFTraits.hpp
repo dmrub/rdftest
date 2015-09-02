@@ -88,12 +88,18 @@ enum PathType
     NO_PATH, RELATIVE_PATH, RELATIVE_TO_BASE_PATH, ABSOLUTE_PATH
 };
 
+template<class T>
+inline std::string uidOf(const Context &ctx, const T &value)
+{
+    return "";
+}
+
 // pathOf
 
 template<class T>
 inline std::string pathOf(const Context &ctx, const T &value)
 {
-    return "";
+    return uidOf(ctx, value);
 }
 
 template<class T>
@@ -108,7 +114,7 @@ inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
 template<class T>
 inline PathType pathTypeOf(const Context &ctx, const T &value)
 {
-    return NO_PATH;
+    return RELATIVE_TO_BASE_PATH;
 }
 
 template<class T>
@@ -118,6 +124,30 @@ inline PathType pathTypeOf(const Context &ctx, const std::shared_ptr<T> &value)
         return pathTypeOf(ctx, *value);
     else
         return NO_PATH;
+}
+
+template<>
+inline std::string pathOf(const Context &ctx, const double &value)
+{
+    return "";
+}
+
+template<>
+inline PathType pathTypeOf(const Context &ctx, const double &value)
+{
+    return NO_PATH; // FIXME: LITERAL_NODE ?
+}
+
+template<>
+inline std::string pathOf(const Context &ctx, const float &value)
+{
+    return "";
+}
+
+template<>
+inline PathType pathTypeOf(const Context &ctx, const float &value)
+{
+    return NO_PATH; // FIXME: LITERAL_NODE ?
 }
 
 std::string joinPath(const std::string &path1, const std::string path2)
@@ -135,43 +165,12 @@ std::string joinPath(const std::string &path1, const std::string path2)
 }
 
 // createRDFNode
-#if 0
-#define CREATE_RDF_NODE(thatNode, ctx, value, memberPathType, memberPath)
-const PathType thatPathType = Arvida::RDF::pathTypeOf(ctx, value);
-if (thatPathType == NO_PATH && memberPathType == NO_PATH)
-{
-    return std::make_pair(Redland::Node::make_blank_node(ctx.world), ctx);
-}
-else
-{
-    std::string thatPath;
-    if (thatPathType == ABSOLUTE_PATH)
-        thatPath = Arvida::RDF::pathOf(ctx, value);
-    else {
-        switch (memberPathType)
-        {
-            case NO_PATH:
-                thatPath = ctx.path;
-                break;
-            case RELATIVE_PATH:
-                thatPath = ctx.path + memberPath;
-                break;
-            case ABSOLUTE_PATH:
-                thatPath = memberPath;
-                break;
-        }
-        if (thatPathType == RELATIVE_PATH)
-            thatPath += pathOf(ctx, value);
-    }
-    return std::make_pair(Redland::Node::make_uri_node(ctx.world, thatPath), Arvida::RDF::Context(ctx, thatPath));
-}
-#endif
 
 template<class T>
 Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
 {
     const PathType thatPathType = pathTypeOf(ctx, value);
-    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    if (thatPathType == NO_PATH)
     {
         Redland::Node thatNode(Redland::Node::make_blank_node(ctx.world));
         return thatNode;
@@ -182,7 +181,7 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
         if (thatPathType == ABSOLUTE_PATH)
             thatPath = pathOf(ctx, value);
         else if (thatPathType == RELATIVE_TO_BASE_PATH)
-            thatPath = ctx.base_path + pathOf(ctx, value);
+            thatPath = joinPath(ctx.base_path, pathOf(ctx, value));
         else {
             switch (memberPathType)
             {
@@ -212,7 +211,7 @@ template<class T>
 Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
 {
     const PathType thatPathType = pathTypeOf(ctx, value);
-    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    if (thatPathType == NO_PATH)
     {
         Redland::Node thatNode(Redland::Node::make_blank_node(ctx.world));
         if (!isNodeExists(ctx.model, thatNode))

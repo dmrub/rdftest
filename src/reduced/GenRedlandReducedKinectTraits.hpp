@@ -114,7 +114,6 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Rotation &v
         {
 
          Redland::Node that_node(Arvida::RDF::createRDFNodeAndSerialize(ctx, _that, Arvida::RDF::NO_PATH, ""));
-
           ctx.model.add_statement(ctx.world, _b0, Redland::Node::make_uri_node(ctx.world,  ctx.namespaces.expand("maths:w")), that_node);
 
         }

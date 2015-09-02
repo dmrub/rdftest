@@ -100,12 +100,18 @@ enum PathType
     NO_PATH, RELATIVE_PATH, RELATIVE_TO_BASE_PATH, ABSOLUTE_PATH
 };
 
+template<class T>
+inline std::string uidOf(const Context &ctx, const T &value)
+{
+    return "";
+}
+
 // pathOf
 
 template<class T>
 inline std::string pathOf(const Context &ctx, const T &value)
 {
-    return "";
+    return uidOf(ctx, value);
 }
 
 template<class T>
@@ -120,7 +126,7 @@ inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
 template<class T>
 inline PathType pathTypeOf(const Context &ctx, const T &value)
 {
-    return NO_PATH;
+    return RELATIVE_TO_BASE_PATH;
 }
 
 template<class T>
@@ -132,13 +138,51 @@ inline PathType pathTypeOf(const Context &ctx, const std::shared_ptr<T> &value)
         return NO_PATH;
 }
 
+template<>
+inline std::string pathOf(const Context &ctx, const double &value)
+{
+    return "";
+}
+
+template<>
+inline PathType pathTypeOf(const Context &ctx, const double &value)
+{
+    return NO_PATH; // FIXME: LITERAL_NODE ?
+}
+
+template<>
+inline std::string pathOf(const Context &ctx, const float &value)
+{
+    return "";
+}
+
+template<>
+inline PathType pathTypeOf(const Context &ctx, const float &value)
+{
+    return NO_PATH; // FIXME: LITERAL_NODE ?
+}
+
+std::string joinPath(const std::string &path1, const std::string path2)
+{
+    if (path2.empty())
+        return path1;
+    if (path1.empty())
+        return path2;
+
+    if (path1.back() == '/' && path2.front() == '/') {
+        return path1.substr(0, path1.size()-1) + path2;
+    } else {
+        return path1 + '/' + path2;
+    }
+}
+
 // createRDFNode
 
 template<class T>
 Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
 {
     const PathType thatPathType = pathTypeOf(ctx, value);
-    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    if (thatPathType == NO_PATH)
     {
         Node thatNode(Node::blank_id(ctx.model.world()));
         return thatNode;
@@ -148,6 +192,8 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
         std::string thatPath;
         if (thatPathType == ABSOLUTE_PATH)
             thatPath = pathOf(ctx, value);
+        else if (thatPathType == RELATIVE_TO_BASE_PATH)
+            thatPath = joinPath(ctx.base_path, pathOf(ctx, value));
         else {
             switch (memberPathType)
             {
@@ -155,17 +201,17 @@ Node createRDFNode(const Context &ctx, const T &value, PathType memberPathType, 
                     thatPath = ctx.path;
                     break;
                 case RELATIVE_PATH:
-                    thatPath = ctx.path + memberPath;
+                    thatPath = joinPath(ctx.path, memberPath);
                     break;
                 case RELATIVE_TO_BASE_PATH:
-                    thatPath = ctx.base_path + memberPath;
+                    thatPath = joinPath(ctx.base_path, memberPath);
                     break;
                 case ABSOLUTE_PATH:
                     thatPath = memberPath;
                     break;
             }
             if (thatPathType == RELATIVE_PATH)
-                thatPath += pathOf(ctx, value);
+                thatPath = joinPath(thatPath, pathOf(ctx, value));
         }
         Arvida::RDF::Context thatCtx(ctx, thatPath);
         Sord::URI thatNode(ctx.model.world(), thatPath);
@@ -177,7 +223,7 @@ template<class T>
 Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memberPathType, const std::string &memberPath)
 {
     const PathType thatPathType = pathTypeOf(ctx, value);
-    if (thatPathType == NO_PATH && memberPathType == NO_PATH)
+    if (thatPathType == NO_PATH)
     {
         Node thatNode(Node::blank_id(ctx.model.world()));
         if (!isNodeExists(ctx.model, thatNode))
@@ -189,6 +235,8 @@ Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memb
         std::string thatPath;
         if (thatPathType == ABSOLUTE_PATH)
             thatPath = pathOf(ctx, value);
+        else if (thatPathType == RELATIVE_TO_BASE_PATH)
+            thatPath = joinPath(ctx.base_path, pathOf(ctx, value));
         else {
             switch (memberPathType)
             {
@@ -196,14 +244,17 @@ Node createRDFNodeAndSerialize(const Context &ctx, const T &value, PathType memb
                     thatPath = ctx.path;
                     break;
                 case RELATIVE_PATH:
-                    thatPath = ctx.path + memberPath;
+                    thatPath = joinPath(ctx.path, memberPath);
+                    break;
+                case RELATIVE_TO_BASE_PATH:
+                    thatPath = joinPath(ctx.base_path, memberPath);
                     break;
                 case ABSOLUTE_PATH:
                     thatPath = memberPath;
                     break;
             }
             if (thatPathType == RELATIVE_PATH)
-                thatPath += pathOf(ctx, value);
+                thatPath = joinPath(thatPath, pathOf(ctx, value));
         }
         Arvida::RDF::Context thatCtx(ctx, thatPath);
         Sord::URI thatNode(ctx.model.world(), thatPath);
