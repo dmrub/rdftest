@@ -103,7 +103,7 @@ enum PathType
 template<class T>
 inline std::string uidOf(const Context &ctx, const T &value)
 {
-    return "";
+    return value.getUid();
 }
 
 // pathOf
@@ -124,7 +124,19 @@ inline std::string pathOf(const Context &ctx, const std::shared_ptr<T> &value)
 }
 
 template<class T>
+inline std::string pathOf_impl(const Context &ctx, const T &value)
+{
+    return uidOf(ctx, value);
+}
+
+template<class T>
 inline PathType pathTypeOf(const Context &ctx, const T &value)
+{
+    return RELATIVE_TO_BASE_PATH;
+}
+
+template<class T>
+inline PathType pathTypeOf_impl(const Context &ctx, const T &value)
 {
     return RELATIVE_TO_BASE_PATH;
 }

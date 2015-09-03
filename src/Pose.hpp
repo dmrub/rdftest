@@ -24,6 +24,8 @@ public:
         : rotation_{other.rotation_[0], other.rotation_[1], other.rotation_[2], other.rotation_[3]}
     { }
 
+    std::string getUid() const { return ""; }
+
     double getX() const { return rotation_[0]; }
 
     double getY() const { return rotation_[1]; }
@@ -66,6 +68,8 @@ public:
         : translation_{other.translation_[0], other.translation_[1], other.translation_[2]}
     { }
 
+    std::string getUid() const { return ""; }
+
     double getX() const { return translation_[0]; }
 
     double getY() const { return translation_[1]; }
@@ -96,6 +100,8 @@ public:
         : translation_(translation)
         , rotation_(rotation)
     { }
+
+    std::string getUid() const { return ""; }
 
     const Translation & getTranslation() const { return translation_; }
 

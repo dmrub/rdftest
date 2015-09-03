@@ -37,9 +37,11 @@ public:
 
     CoordinateSystem(const std::string &name) : tag_(boost::uuids::random_generator()()), name_(name) { }
 
-    std::string getName() const { return boost::uuids::to_string(tag_); }
+    std::string getUid() const { return boost::uuids::to_string(tag_); }
 
     virtual ~CoordinateSystem() { }
+
+    const std::string & getName() const { return name_; }
 
 private:
     boost::uuids::uuid tag_;
@@ -67,7 +69,6 @@ private:
 class
 
 RdfUseVisitor()
-RdfPath("{$this->getName()}")
 
 Quantity: public Visitable<Quantity>
 {
@@ -77,7 +78,9 @@ public:
 
     Quantity(const std::string &name) : tag_(boost::uuids::random_generator()()), name_(name) { }
 
-    std::string getName() const { return boost::uuids::to_string(tag_); }
+    std::string getUid() const { return boost::uuids::to_string(tag_); }
+
+    const std::string getName() const { return name_; }
 
     virtual ~Quantity() { }
 
@@ -226,7 +229,7 @@ public:
         quantities_ = std::move(quantities);
     }
 
-    std::string getUId() const { return boost::uuids::to_string(tag_); }
+    std::string getUid() const { return boost::uuids::to_string(tag_); }
 
 private:
     boost::uuids::uuid tag_;

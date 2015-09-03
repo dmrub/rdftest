@@ -36,6 +36,8 @@ public:
 
     const std::string & getName() const { return name_; }
 
+    const std::string & getUid() const { return name_; }
+
     virtual ~CoordinateSystem() { }
 
 private:
@@ -73,6 +75,8 @@ public:
     Quantity(const std::string &name) : name_(name) { }
 
     const std::string & getName() const { return name_; }
+
+    const std::string & getUid() const { return name_; }
 
     virtual ~Quantity() { }
 
@@ -209,6 +213,8 @@ public:
 
     const std::string & getName() const { return name_; }
 
+    const std::string & getUid() const { return name_; }
+
     RdfStmt($this, "spatial:sourceCoordinateSystem", $that)
     RdfAbsolutePath("{::get_coordinate_systems_path($ctx)}/{$that ? $that->getName() : \"\"}")
     const std::shared_ptr< CoordinateSystem > & getSourceCoordinateSystem() const { return sourceCoordinateSystem_; }
@@ -304,6 +310,8 @@ public:
 
     const std::string & getName() const { return name_; }
 
+    const std::string & getUid() const { return name_; }
+
     RdfAbsoluteElementPath("{::get_segments_path($ctx)}/{$element ? $element->getName() : \"\"}")
     RdfStmt($this, "skel:skeletonBone", $that.foreach)
     const std::vector< std::shared_ptr<Bone> > & getBones() const { return bones_; }
@@ -360,6 +368,8 @@ public:
         , segments_()
         , skeletons_()
     { }
+
+    std::string getUid() const { return ""; }
 
     RdfPath("/coordinateSystems/")
     RdfElementPath("/coordinateSystems/{$element ? $element->getName() : \"\"}")

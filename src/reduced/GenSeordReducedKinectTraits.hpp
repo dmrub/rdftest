@@ -9,7 +9,7 @@ namespace Arvida
 {
 namespace RDF
 {
-
+/*
 inline PathType pathTypeOf_impl(const Context &ctx, const ::Quantity &value)
 {
     return RELATIVE_TO_BASE_PATH;
@@ -17,12 +17,8 @@ inline PathType pathTypeOf_impl(const Context &ctx, const ::Quantity &value)
 
 inline std::string pathOf_impl(const Context &ctx, const ::Quantity &value)
 {
-    const auto _this = &value;
-    return (_this->getName());
+    return uidOf(ctx, value);
 }
-
-
-
 
 
 template<>
@@ -34,10 +30,9 @@ inline PathType pathTypeOf(const Context &ctx, const ::QuantityManager &value)
 template<>
 inline std::string pathOf(const Context &ctx, const ::QuantityManager &value)
 {
-    const auto _this = &value;
-    return value.getUId();
+    return uidOf(ctx, value);
 }
-
+*/
 
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::CoordinateSystem &value)
 {

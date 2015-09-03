@@ -16,6 +16,24 @@
 #error "No library specified"
 #endif
 
+#include "ReducedKinect.hpp"
+
+
+namespace Arvida
+{
+namespace RDF
+{
+
+template <>
+inline std::string uidOf(const Context &ctx, const Quantity &value)
+{
+    return value.getName();
+}
+
+}
+}
+
+
 class PathManager
 {
 public:

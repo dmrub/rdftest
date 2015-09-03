@@ -15,7 +15,7 @@
 #define SEORD_LIB
 #include "sord/sordmm.hpp"
 #include "serd/serd.h"
-#include "GenSeordKinectTraits.hpp"
+//#include "GenSeordKinectTraits.hpp"
 #include "KinectTraits.hpp"
 
 

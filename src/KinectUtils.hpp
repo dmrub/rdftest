@@ -41,4 +41,16 @@ std::string get_quantities_path(const Arvida::RDF::Context &ctx)
     return reinterpret_cast<const PathManager*>(ctx.user_data)->base_path + "/skelTracker/quantities";
 }
 
+namespace Arvida {
+namespace RDF {
+
+template <class T>
+inline std::string uidOf(const Context &ctx, const std::vector<T> &value)
+{
+    return "";
+}
+
+}
+}
+
 #endif /* KINECTUTILS_HPP_INCLUDED */

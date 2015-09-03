@@ -15,7 +15,6 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::CoordinateS
 {
      {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:CoordinateSystem"));
-
      }
     return _this;
 }
@@ -25,7 +24,6 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::RightHanded
     toRDF_impl(ctx, _this, static_cast<const ::CoordinateSystem &>(value));
      {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "maths:RightHandedCartesianCoordinateSystem3D"));
-
      }
     return _this;
 }
@@ -208,14 +206,12 @@ inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Joint &valu
     toRDF_impl(ctx, _this, static_cast<const ::Segment &>(value));
      {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "skel:Joint"));
-
      }
     return _this;
 }
 
 inline NodeRef toRDF_impl(const Context &ctx, NodeRef _this, const ::Bone &value)
 {
-
     toRDF_impl(ctx, _this, static_cast<const ::Segment &>(value));
      {
     ctx.model.add_statement(_this, Sord::Curie(ctx.model.world(), "rdf:type"), Sord::Curie(ctx.model.world(), "skel:Bone"));
